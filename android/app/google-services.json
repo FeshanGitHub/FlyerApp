@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "820471702661",
+    "project_id": "flyerapp-b1988",
+    "storage_bucket": "flyerapp-b1988.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:820471702661:android:b55a7002ca4d838a3775ec",
+        "android_client_info": {
+          "package_name": "com.example.flyer.com.flyerapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "820471702661-dig9fb0qm9v589u6pkt6u35ucarmhc4s.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.flyer.com.flyerapp",
+            "certificate_hash": "82f88197f2b0bd71419de1c17b8386f8c509c1ca"
+          }
+        },
+        {
+          "client_id": "820471702661-ogrtn4hs1f1n46ss62q3o9vp1f4bg41l.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB4e97EW-O2DriPp9DW6BTDzVwH-GfVyTQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "820471702661-ogrtn4hs1f1n46ss62q3o9vp1f4bg41l.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
