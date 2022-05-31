@@ -1,3 +1,4 @@
+import 'package:circular_bottom_navigation/tab_item.dart';
 import 'package:flutter/material.dart';
 import 'package:flyerapp/Screens/HomePage/Deliveries/deliveries.dart';
 import 'package:flyerapp/Screens/HomePage/Help/help.dart';
@@ -5,11 +6,12 @@ import 'package:flyerapp/Screens/HomePage/Invite/invite.dart';
 import 'package:flyerapp/Screens/HomePage/Payment/payment.dart';
 import 'package:flyerapp/Screens/HomePage/PreferedLocation/prefered_location.dart';
 import 'package:flyerapp/Screens/HomePage/Shipments/shipments.dart';
-
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import '../../Constants/colors.dart';
+import 'package:circular_bottom_navigation/circular_bottom_navigation.dart';
 
 class HomePage extends StatefulWidget {
-  const HomePage({Key? key}) : super(key: key);
+  const HomePage({Key? key,}) : super(key: key);
 
   @override
   State<HomePage> createState() => _HomePageState();
@@ -17,11 +19,17 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   GlobalKey<ScaffoldState> scaffoldKey =GlobalKey<ScaffoldState>();
-  var selectedCard = 'Home';
+  GlobalKey bottomNavigationKey = GlobalKey();
+  int selectedPos = 0;
+  var selectedCard = 'Deliveries';
   var selectedIndex = 0;
-
+  List<TabItem> tableItems = List.of([
+    TabItem(Icons.home,"Home",flyOrange2,labelStyle: TextStyle(fontFamily: 'Roboto-Regular',color: Color(0xFF4D4D4D))),
+    TabItem(Icons.cases_rounded ,"Job Sheet",flyOrange2,labelStyle: TextStyle(fontFamily: 'Roboto-Regular',color: Color(0xFF4D4D4D))),
+    TabItem(Icons.person,"Profile",flyOrange2,labelStyle: TextStyle(fontFamily: 'Roboto-Regular',color: Color(0xFF4D4D4D))),
+  ]);
+   late CircularBottomNavigationController _navigationController;
   var homePages = [
-    HomePage(),
     Deliveries(),
     PreferedLocMainMenu(),
     Shipments(),
@@ -30,15 +38,30 @@ class _HomePageState extends State<HomePage> {
     Invite()
   ];
   @override
+  void initState(){
+    super.initState();
+    _navigationController = CircularBottomNavigationController(selectedPos);
+  }
+  @override
   Widget build(BuildContext context) {
     var H = MediaQuery.of(context).size.height;
     var W = MediaQuery.of(context).size.width;
     return SafeArea(
       child: Scaffold(
-      backgroundColor: Colors.white,
+        extendBody: true,
+        backgroundColor: Color(0xFFF6F7F9),
       key: scaffoldKey,
+      bottomNavigationBar: CircularBottomNavigation(
+        tableItems,
+        circleSize: 60,
+        iconsSize: 28,
+        barHeight: H*0.07,
+        controller: _navigationController,
+        normalIconColor: Color(0xFF4D4D4D),
+
+      ),
       appBar: AppBar(
-        backgroundColor: Colors.white,
+        backgroundColor: Color(0xFFF6F7F9),
         elevation: 0,
         leading: InkWell(
           onTap: (){
@@ -140,14 +163,13 @@ class _HomePageState extends State<HomePage> {
                       color: Color(0xFFE0E0E0),
                     ),
                   ),
-                  buildDrawerCard(H,"assets/images/deliveries.png","  Home",0),
-                  buildDrawerCard(H,"assets/images/deliveries.png","  Deliveries",1),
-                  buildDrawerCard(H,"assets/images/prefered_location.png","  Prefered Location",2),
-                  buildDrawerCard(H,"assets/images/shipments.png","  Shipments",3),
-                  buildDrawerCard(H,"assets/images/payments.png","  Payments",4),
-                  buildDrawerCard(H,"assets/images/help.png","  Help",5),
-                  buildDrawerCard(H,"assets/images/invite.png","  Invite",6),
-                  buildDrawerCard(H,"assets/images/logout.png","  Logout",7),
+                  buildDrawerCard(H,"assets/images/deliveries.png","  Deliveries",0),
+                  buildDrawerCard(H,"assets/images/prefered_location.png","  Prefered Location",1),
+                  buildDrawerCard(H,"assets/images/shipments.png","  Shipments",2),
+                  buildDrawerCard(H,"assets/images/payments.png","  Payments",3),
+                  buildDrawerCard(H,"assets/images/help.png","  Help",4),
+                  buildDrawerCard(H,"assets/images/invite.png","  Invite",5),
+                  buildDrawerCard(H,"assets/images/logout.png","  Logout",6),
                 ],
               ),
             ),
