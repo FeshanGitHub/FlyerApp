@@ -8,6 +8,7 @@ import 'Screens/Face Recognition/face_recognition.dart';
 import 'package:get/get.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'Screens/HomePage/homepage.dart';
+import 'Screens/HomePage/homepage.dart';
 import 'Screens/JobTracking/job_tracking.dart';
 import 'Screens/PreferedLocation/prefered_location.dart';
 
@@ -35,7 +36,7 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.blue,
       ),
       debugShowCheckedModeBanner: false,
-      home: SplashScreeen(),
+      home: HomePage(),
     );
   }
 }
