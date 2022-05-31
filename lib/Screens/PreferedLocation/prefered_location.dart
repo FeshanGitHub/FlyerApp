@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flyerapp/Screens/HomePage/homepage.dart';
 import '../../Constants/colors.dart';
 import 'package:get/get.dart';
 
@@ -129,12 +130,17 @@ class _PreferedLocationState extends State<PreferedLocation> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Text("SKIP",
-                      style: TextStyle(
-                          color: Color(0xFF646464),
-                          fontFamily: 'OpenSans-Semibold',
-                          fontSize: 19,
-                          fontWeight: FontWeight.bold
+                    InkWell(
+                      onTap: (){
+                        Get.to(HomePage());
+                      },
+                      child: Text("SKIP",
+                        style: TextStyle(
+                            color: Color(0xFF646464),
+                            fontFamily: 'OpenSans-Semibold',
+                            fontSize: 19,
+                            fontWeight: FontWeight.bold
+                        ),
                       ),
                     ),
                     SizedBox(width: W*0.03,),

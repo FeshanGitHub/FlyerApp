@@ -356,7 +356,8 @@ class _SignUpPageState extends State<SignUpPage> {
                 SizedBox(height: H*0.02,),
                 InkWell(
                   onTap: (){
-                    registerUser();
+                    // registerUser();
+                    Get.to(PreferedLocation());
                   },
                   child: Container(
                     width: W*0.8,
