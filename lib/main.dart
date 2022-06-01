@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flyerapp/Constants/colors.dart';
 import 'package:flyerapp/Screens/Face%20Recognition/face_reco_registeration.dart';
+import 'package:flyerapp/Screens/JobSheetDetails/job_sheet_details.dart';
 import 'package:flyerapp/Screens/LoginScreen/login_screen.dart';
 import 'package:flyerapp/Screens/Registeration/registeration.dart';
 import 'package:flyerapp/Screens/SplashScreen/splash_screen.dart';
@@ -37,7 +38,7 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.blue,
       ),
       debugShowCheckedModeBanner: false,
-      home: SplashScreeen(),
+      home: JobSheetDetails(),
     );
   }
 }
