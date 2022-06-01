@@ -106,3 +106,6 @@ flutter:
     - family: Gothic-Regular
       fonts:
         - asset: assets/Gothic_A1/GothicA1-Regular.ttf
+    - family: Gothic-Bold
+      fonts:
+        - asset: assets/Gothic_A1/GothicA1-Bold.ttf

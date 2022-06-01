@@ -9,6 +9,9 @@ import 'package:flyerapp/Screens/HomePage/Shipments/shipments.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import '../../Constants/colors.dart';
 import 'package:circular_bottom_navigation/circular_bottom_navigation.dart';
+import 'package:get/get.dart';
+
+import '../Job Details/job_details.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key,}) : super(key: key);
@@ -234,7 +237,11 @@ class _HomePageState extends State<HomePage> {
                   itemBuilder: (context ,index){
                     return Column(
                       children: [
-                        buildCardFlyer(H, W),
+                        InkWell(
+                            onTap: (){
+                              Get.to(JobDetails());
+                            },
+                           child: buildCardFlyer(H, W)),
                         SizedBox(height: H*0.015,)
                       ],
                     );

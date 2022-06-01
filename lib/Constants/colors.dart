@@ -3,6 +3,7 @@ import 'dart:ui';
 
 const flyGray1 = Color(0xFF969696);
 const flyMargenta = Color(0xFFAB2349);
+const flyBackground = Color(0xFFF6F7F9);
 const flyOrange1 = Color(0xFFDF7835);
 const flyOrange2 = Color(0xFFF26839);
 const flyGray2 = Color(0xFFC8C4C1);

@@ -9,6 +9,7 @@ import 'package:get/get.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'Screens/HomePage/homepage.dart';
 import 'Screens/HomePage/homepage.dart';
+import 'Screens/Job Details/job_details.dart';
 import 'Screens/JobTracking/job_tracking.dart';
 import 'Screens/PreferedLocation/prefered_location.dart';
 
