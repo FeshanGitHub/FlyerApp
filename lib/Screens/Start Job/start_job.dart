@@ -3,14 +3,14 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 import '../../Constants/colors.dart';
 
-class JobSheetDetails extends StatefulWidget {
-  const JobSheetDetails({Key? key}) : super(key: key);
+class StartJob extends StatefulWidget {
+  const StartJob({Key? key}) : super(key: key);
 
   @override
-  State<JobSheetDetails> createState() => _JobSheetDetailsState();
+  State<StartJob> createState() => _StartJobState();
 }
 
-class _JobSheetDetailsState extends State<JobSheetDetails> {
+class _StartJobState extends State<StartJob> {
   @override
   Widget build(BuildContext context) {
     var H = MediaQuery.of(context).size.height;
@@ -26,10 +26,10 @@ class _JobSheetDetailsState extends State<JobSheetDetails> {
                   Get.back();
                 },
                 child: Icon(Icons.arrow_back,color: Color(0xFF4D4D4D),))),
-        title: Text("Job Sheet Details"),
+        title: Text("Job Details"),
         titleTextStyle: TextStyle(
           fontFamily: "OpenSans-Semibold",
-          fontSize: 20,
+          fontSize: 22,
           color: Colors.black,
 
         ),
@@ -59,7 +59,7 @@ class _JobSheetDetailsState extends State<JobSheetDetails> {
         child: Column(
           children: [
             Container(
-              height: H*0.38,
+              height: H*0.4,
               child: Stack(
                 children: [
                   Align(
@@ -156,14 +156,14 @@ class _JobSheetDetailsState extends State<JobSheetDetails> {
                                   Text("Job Post Date:",
                                     style: TextStyle(
                                         fontFamily: 'OpenSans-Regular',
-                                        fontSize: 14,
+                                        fontSize: 15,
                                         color: Color(0xFF808080)
                                     ),
                                   ),
                                   Text(" 17 May 2022",
                                     style: TextStyle(
                                         fontFamily: 'OpenSans-Regular',
-                                        fontSize: 14,
+                                        fontSize: 15,
                                         color: Color(0xFF333333)
                                     ),
                                   ),
@@ -171,47 +171,60 @@ class _JobSheetDetailsState extends State<JobSheetDetails> {
                               ),
                               Row(
                                 children: [
-                                  Text("Location:",
+                                  Text("Completed By:",
                                     style: TextStyle(
                                         fontFamily: 'OpenSans-Regular',
-                                        fontSize: 14,
+                                        fontSize: 15,
                                         color: Color(0xFF808080)
                                     ),
                                   ),
-                                  Text(" Area 1,New Town,Kolkata 700091",
+                                  Text(" 17 May 2022",
                                     style: TextStyle(
                                         fontFamily: 'OpenSans-Regular',
-                                        fontSize: 12,
+                                        fontSize: 15,
                                         color: Color(0xFF333333)
                                     ),
                                   ),
                                 ],
                               ),
-                              SizedBox(height: H*0.04,),
-                              Divider(
-                                color: Color(0xFFEFEFEF),
+                              SizedBox(height: H*0.03,),
+                              Row(
+                                children: [
+                                  Text("Number of Flyer:",
+                                    style: TextStyle(
+                                        fontFamily: 'OpenSans-Regular',
+                                        fontSize: 15,
+                                        color: Color(0xFF808080)
+                                    ),
+                                  ),
+                                  Text(" 1000",
+                                    style: TextStyle(
+                                        fontFamily: 'OpenSans-Regular',
+                                        fontSize: 15,
+                                        color: Color(0xFF333333)
+                                    ),
+                                  ),
+                                ],
                               ),
                               Row(
                                 children: [
-                                  Text("Tracking ID:",
+                                  Text("Number of Doorhangers:",
                                     style: TextStyle(
                                         fontFamily: 'OpenSans-Regular',
-                                        fontSize: 14,
+                                        fontSize: 15,
                                         color: Color(0xFF808080)
                                     ),
                                   ),
-                                  Text(" 252312",
+                                  Text(" 1000",
                                     style: TextStyle(
                                         fontFamily: 'OpenSans-Regular',
-                                        fontSize: 12,
+                                        fontSize: 15,
                                         color: Color(0xFF333333)
                                     ),
                                   ),
-                                  SizedBox(height: H*0.04,),
-
                                 ],
                               ),
-
+                              SizedBox(height: H*0.03,),
                             ],
                           ),
                         ),
@@ -221,7 +234,93 @@ class _JobSheetDetailsState extends State<JobSheetDetails> {
                 ],
               ),
             ),
-            SizedBox(height: H*0.04,),
+            Text("Job Location",
+              style: TextStyle(
+                  color: flyBlue1,
+                  fontFamily: "Opensans-Bold",
+                  fontSize: 15
+              ),
+            ),
+            SizedBox(height: H*0.01,),
+            Container(
+              width: W*0.9,
+              decoration: BoxDecoration(
+                  boxShadow: [BoxShadow(
+                      offset: Offset(1,1),
+                      color:flyGray4,
+                      blurRadius: 20
+                  )],
+                  color: Colors.white,
+                  borderRadius: BorderRadius.all(Radius.circular(12))
+              ),
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      children: [
+                        CircleAvatar(
+                          radius: 20,
+                          backgroundColor: Color(0xFFC4C4C4),
+                          child: CircleAvatar(
+                            radius: 19,
+                            foregroundColor: Colors.black,
+                            backgroundColor: Colors.white
+                            ,child: Container(
+                            decoration: BoxDecoration(
+                                image: DecorationImage(
+                                  image: AssetImage("assets/images/from_tracking.png"),
+                                )
+                            ),
+                          ),
+                          ),
+                        ),
+                        Text("  Area 1,New Town,Kolkata 700091",
+                          style: TextStyle(
+                              color: Color(0xFF333333),
+                              fontFamily: "Opensans-Regular",
+                              fontSize: 14
+                          ),
+                        ),
+                      ],
+                    ),
+                    Padding(
+                      padding:  EdgeInsets.only(left: W*0.05),
+                      child: Image.asset("assets/images/tracking_line.png"),
+                    ),
+                    Row(
+                      children: [
+                        CircleAvatar(
+                          radius: 20,
+                          backgroundColor: Color(0xFFC4C4C4),
+                          child: CircleAvatar(
+                            radius: 19,
+                            foregroundColor: Colors.black,
+                            backgroundColor: Colors.white
+                            ,child: Container(
+                            decoration: BoxDecoration(
+                                image: DecorationImage(
+                                  image: AssetImage("assets/images/map.png"),
+                                )
+                            ),
+                          ),
+                          ),
+                        ),
+                        Text("  Area 1,New Town,Kolkata 700091",
+                          style: TextStyle(
+                              color: Color(0xFF333333),
+                              fontFamily: "Opensans-Regular",
+                              fontSize: 14
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            SizedBox(height: H*0.05,),
             InkWell(
               onTap: (){
 
@@ -238,7 +337,7 @@ class _JobSheetDetailsState extends State<JobSheetDetails> {
                     )
                 ),
                 child: Center(child:
-                Text("Track",
+                Text("Start Job",
                   style: TextStyle(
                       fontFamily: "Opensans-Bold",
                       fontSize: 16,

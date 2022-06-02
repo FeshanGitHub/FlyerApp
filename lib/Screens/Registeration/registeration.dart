@@ -373,6 +373,7 @@ class _SignUpPageState extends State<SignUpPage> {
                     child: Center(child:
                     Text("Next",
                       style: TextStyle(
+                          fontFamily: "Opensans-Bold",
                           fontSize: 16,
                           color: Colors.white
                       ),
