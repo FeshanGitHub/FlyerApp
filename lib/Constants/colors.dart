@@ -16,3 +16,4 @@ const flyGray5 = Color(0xFFC8C4C1);
 const flyBlack2 = Color(0xFF6A6A6A);
 const flyBlue1 = Color(0xFF295586);
 const flyBlue2 = Color(0xFF1E5798);
+const flyGreen = Color(0xFF0BBE65);
