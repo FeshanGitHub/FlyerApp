@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flyerapp/Constants/colors.dart';
 import 'package:flyerapp/Screens/Face%20Recognition/face_reco_registeration.dart';
 import 'package:flyerapp/Screens/HomePage/Deliveries/deliveries.dart';
+import 'package:flyerapp/Screens/HomePage/Help/help.dart';
 import 'package:flyerapp/Screens/HomePage/Shipments/shipments.dart';
 import 'package:flyerapp/Screens/Invite%20Friends/invite_friends.dart';
 import 'package:flyerapp/Screens/Job%20Sheet/job_sheet.dart';
@@ -20,13 +21,14 @@ import 'Screens/HomePage/homepage.dart';
 import 'Screens/Job Details/job_details.dart';
 import 'Screens/JobTracking/job_tracking.dart';
 import 'Screens/PreferedLocation/prefered_location.dart';
+import 'package:firebase_database/firebase_database.dart';
 
 void main() async{
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
   runApp(const MyApp());
 }
-
+DatabaseReference userRef = FirebaseDatabase.instance.ref().child("users");
 class MyApp extends StatelessWidget {
   const MyApp({Key? key}) : super(key: key);
 
@@ -45,7 +47,7 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.blue,
       ),
       debugShowCheckedModeBanner: false,
-      home: InviteFriends(),
+      home: SplashScreeen(),
     );
   }
 }

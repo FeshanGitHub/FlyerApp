@@ -69,13 +69,197 @@ class _InviteFriendsState extends State<InviteFriends> {
             SizedBox(height: H*0.03,),
             Row(
               children: [
-                buildInviteCard(H, W,"assets/images/whatsapp.png"),
+                InkWell(
+                    onTap: (){
+                      Get.defaultDialog(
+                        title:"",
+                        content: Column(
+                          children: [
+                            buildInviteCard(H, W, "assets/images/contacts.png"),
+                            SizedBox(height: H*0.02,),
+                            Text("Allow to access your contacts",
+                            style: TextStyle(
+                              fontFamily: "OpenSans-Regular",
+                              fontSize: 14,
+                              color: Colors.black,
+                            ),
+                            ),
+                            SizedBox(height: H*0.02,),
+                            InkWell(
+                              onTap: (){
+                                // registerUser();
+                              },
+                              child: Container(
+                                width: W*0.8,
+                                height: H*0.08,
+                                decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.all(Radius.circular(5)),
+                                    gradient: LinearGradient(
+                                        colors: [flyOrange1,flyOrange2],
+                                        begin: Alignment.bottomLeft,
+                                        end:  Alignment.topRight
+                                    )
+                                ),
+                                child: Center(child:
+                                Text("Confirm",
+                                  style: TextStyle(
+                                      fontFamily: "Opensans-Bold",
+                                      fontSize: 16,
+                                      color: Colors.white
+                                  ),
+                                )
+                                ),
+                              ),
+                            ),
+                          ],
+                        )
+                      );
+                    },
+                    child: buildInviteCard(H, W,"assets/images/whatsapp.png")),
                 SizedBox(width: W*0.03,),
-                buildInviteCard(H, W,"assets/images/messenger.png"),
+                InkWell(
+                    onTap: (){
+                      Get.defaultDialog(
+                          title:"",
+                          content: Column(
+                            children: [
+                              buildInviteCard(H, W, "assets/images/contacts.png"),
+                              SizedBox(height: H*0.02,),
+                              Text("Allow to access your contacts",
+                                style: TextStyle(
+                                  fontFamily: "OpenSans-Regular",
+                                  fontSize: 14,
+                                  color: Colors.black,
+                                ),
+                              ),
+                              SizedBox(height: H*0.02,),
+                              InkWell(
+                                onTap: (){
+                                  // registerUser();
+                                },
+                                child: Container(
+                                  width: W*0.8,
+                                  height: H*0.08,
+                                  decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.all(Radius.circular(5)),
+                                      gradient: LinearGradient(
+                                          colors: [flyOrange1,flyOrange2],
+                                          begin: Alignment.bottomLeft,
+                                          end:  Alignment.topRight
+                                      )
+                                  ),
+                                  child: Center(child:
+                                  Text("Confirm",
+                                    style: TextStyle(
+                                        fontFamily: "Opensans-Bold",
+                                        fontSize: 16,
+                                        color: Colors.white
+                                    ),
+                                  )
+                                  ),
+                                ),
+                              ),
+                            ],
+                          )
+                      );
+                    },
+                    child: buildInviteCard(H, W,"assets/images/messenger.png")),
                 SizedBox(width: W*0.03,),
-                buildInviteCard(H, W,"assets/images/skype.png"),
+                InkWell(
+                    onTap: (){
+                      Get.defaultDialog(
+                          title:"",
+                          content: Column(
+                            children: [
+                              buildInviteCard(H, W, "assets/images/contacts.png"),
+                              SizedBox(height: H*0.02,),
+                              Text("Allow to access your contacts",
+                                style: TextStyle(
+                                  fontFamily: "OpenSans-Regular",
+                                  fontSize: 14,
+                                  color: Colors.black,
+                                ),
+                              ),
+                              SizedBox(height: H*0.02,),
+                              InkWell(
+                                onTap: (){
+                                  // registerUser();
+                                },
+                                child: Container(
+                                  width: W*0.8,
+                                  height: H*0.08,
+                                  decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.all(Radius.circular(5)),
+                                      gradient: LinearGradient(
+                                          colors: [flyOrange1,flyOrange2],
+                                          begin: Alignment.bottomLeft,
+                                          end:  Alignment.topRight
+                                      )
+                                  ),
+                                  child: Center(child:
+                                  Text("Confirm",
+                                    style: TextStyle(
+                                        fontFamily: "Opensans-Bold",
+                                        fontSize: 16,
+                                        color: Colors.white
+                                    ),
+                                  )
+                                  ),
+                                ),
+                              ),
+                            ],
+                          )
+                      );
+                    },
+                    child: buildInviteCard(H, W,"assets/images/skype.png")),
                 SizedBox(width: W*0.03,),
-                buildInviteCard(H, W,"assets/images/gmail.png"),
+                InkWell(
+                    onTap: (){
+                      Get.defaultDialog(
+                          title:"",
+                          content: Column(
+                            children: [
+                              buildInviteCard(H, W, "assets/images/contacts.png"),
+                              SizedBox(height: H*0.02,),
+                              Text("Allow to access your contacts",
+                                style: TextStyle(
+                                  fontFamily: "OpenSans-Regular",
+                                  fontSize: 14,
+                                  color: Colors.black,
+                                ),
+                              ),
+                              SizedBox(height: H*0.02,),
+                              InkWell(
+                                onTap: (){
+                                  // registerUser();
+                                },
+                                child: Container(
+                                  width: W*0.8,
+                                  height: H*0.08,
+                                  decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.all(Radius.circular(5)),
+                                      gradient: LinearGradient(
+                                          colors: [flyOrange1,flyOrange2],
+                                          begin: Alignment.bottomLeft,
+                                          end:  Alignment.topRight
+                                      )
+                                  ),
+                                  child: Center(child:
+                                  Text("Confirm",
+                                    style: TextStyle(
+                                        fontFamily: "Opensans-Bold",
+                                        fontSize: 16,
+                                        color: Colors.white
+                                    ),
+                                  )
+                                  ),
+                                ),
+                              ),
+                            ],
+                          )
+                      );
+                    },
+                    child: buildInviteCard(H, W,"assets/images/gmail.png")),
               ],
             )
           ],
