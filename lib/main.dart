@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flyerapp/Constants/colors.dart';
 import 'package:flyerapp/Screens/Face%20Recognition/face_reco_registeration.dart';
 import 'package:flyerapp/Screens/Forgot%20password/forgot_password.dart';
+import 'package:flyerapp/Screens/Forgot%20password/verify_otp.dart';
 import 'package:flyerapp/Screens/HomePage/Deliveries/deliveries.dart';
 import 'package:flyerapp/Screens/HomePage/Help/help.dart';
 import 'package:flyerapp/Screens/HomePage/Shipments/shipments.dart';
@@ -48,7 +49,7 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.blue,
       ),
       debugShowCheckedModeBanner: false,
-      home: ForgotPassword(),
+      home: VerifyOTP(),
     );
   }
 }
