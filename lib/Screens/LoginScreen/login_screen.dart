@@ -147,7 +147,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     child: Center(child:
                     Text("Sign IN",
                     style: TextStyle(
-                        fontFamily: 'OpenSans-Medium',
+                        fontFamily: 'OpenSans-Bold',
                       fontSize: 16,
                       color: Colors.white
                     ),
