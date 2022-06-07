@@ -13,8 +13,9 @@ import 'package:flyerapp/Screens/Job%20Sheet/job_sheet.dart';
 import 'package:flyerapp/Screens/JobSheetDetails/job_sheet_details.dart';
 import 'package:flyerapp/Screens/LoginScreen/login_screen.dart';
 import 'package:flyerapp/Screens/Notifications/notifications.dart';
-import 'package:flyerapp/Screens/Payment/add_payment.dart';
-import 'package:flyerapp/Screens/Prefered%20Location%20Edit/prefered_loca_edit.dart';
+import 'package:flyerapp/Screens/Payment/add_payment2.dart';
+import 'package:flyerapp/Screens/Payment/payment.dart';
+import 'package:flyerapp/Screens/PreferedLocation/prefered_loca_edit.dart';
 import 'package:flyerapp/Screens/Registeration/registeration.dart';
 import 'package:flyerapp/Screens/SplashScreen/splash_screen.dart';
 import 'package:flyerapp/Screens/Start%20Job/start_job.dart';
@@ -52,7 +53,7 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.blue,
       ),
       debugShowCheckedModeBanner: false,
-      home: AddBankAccount(),
+      home: AddBankAccount2(),
     );
   }
 }

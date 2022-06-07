@@ -3,14 +3,14 @@ import 'package:get/get.dart';
 
 import '../../Constants/colors.dart';
 
-class AddBankAccount extends StatefulWidget {
-  const AddBankAccount({Key? key}) : super(key: key);
+class AddBankAccount1 extends StatefulWidget {
+  const AddBankAccount1({Key? key}) : super(key: key);
 
   @override
-  State<AddBankAccount> createState() => _AddBankAccountState();
+  State<AddBankAccount1> createState() => _AddBankAccount1State();
 }
 
-class _AddBankAccountState extends State<AddBankAccount> {
+class _AddBankAccount1State extends State<AddBankAccount1> {
   bool hidePassword1 = true;
   bool hidePassword2 = true;
   bool hidePassword3 = true;
