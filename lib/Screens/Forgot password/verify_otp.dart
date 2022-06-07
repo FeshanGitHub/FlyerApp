@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:country_code_picker/country_code_picker.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import '../../Constants/colors.dart';
@@ -45,7 +44,7 @@ class _VerifyOTPState extends State<VerifyOTP> {
                     height: H*0.15,
                     child: Center(child: Image.asset("assets/images/verify_otp.png"))),
                 SizedBox(height: H*0.08,),
-                Text("Verification",
+                Text("Reset Password",
                   style: TextStyle(
                     fontFamily: "OpenSans-Bold",
                     fontSize: 20,

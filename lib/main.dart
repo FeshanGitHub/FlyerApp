@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flyerapp/Constants/colors.dart';
 import 'package:flyerapp/Screens/Face%20Recognition/face_reco_registeration.dart';
+import 'package:flyerapp/Screens/Forgot%20password/change_password.dart';
 import 'package:flyerapp/Screens/Forgot%20password/forgot_password.dart';
+import 'package:flyerapp/Screens/Forgot%20password/reset_password.dart';
 import 'package:flyerapp/Screens/Forgot%20password/verify_otp.dart';
 import 'package:flyerapp/Screens/HomePage/Deliveries/deliveries.dart';
 import 'package:flyerapp/Screens/HomePage/Help/help.dart';
@@ -11,6 +13,7 @@ import 'package:flyerapp/Screens/Job%20Sheet/job_sheet.dart';
 import 'package:flyerapp/Screens/JobSheetDetails/job_sheet_details.dart';
 import 'package:flyerapp/Screens/LoginScreen/login_screen.dart';
 import 'package:flyerapp/Screens/Notifications/notifications.dart';
+import 'package:flyerapp/Screens/Payment/add_payment.dart';
 import 'package:flyerapp/Screens/Prefered%20Location%20Edit/prefered_loca_edit.dart';
 import 'package:flyerapp/Screens/Registeration/registeration.dart';
 import 'package:flyerapp/Screens/SplashScreen/splash_screen.dart';
@@ -49,7 +52,7 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.blue,
       ),
       debugShowCheckedModeBanner: false,
-      home: VerifyOTP(),
+      home: AddBankAccount(),
     );
   }
 }
