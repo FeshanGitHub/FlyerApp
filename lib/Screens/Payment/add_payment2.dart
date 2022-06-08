@@ -25,9 +25,9 @@ class _AddBankAccount2State extends State<AddBankAccount2> {
     var W = MediaQuery.of(context).size.width;
     return SafeArea(
       child: Scaffold(
-        backgroundColor: Colors.white,
+        backgroundColor: Color(0xFFF6F7F9),
         appBar: AppBar(
-          backgroundColor: Colors.white,
+          backgroundColor:  Color(0xFFF6F7F9),
           elevation: 0,
           leading: Container(
               child: InkWell(
@@ -53,7 +53,7 @@ class _AddBankAccount2State extends State<AddBankAccount2> {
                Align(
                  alignment: Alignment.centerRight,
                  child: Container(
-                   height: H*0.055,
+                   height: H*0.05,
                    padding: EdgeInsets.only(left: W*0.05),
                    decoration: BoxDecoration(
                        color: Colors.white,
@@ -80,12 +80,67 @@ class _AddBankAccount2State extends State<AddBankAccount2> {
                      },
                    ),
                  ),
-               )
+               ),
+                SizedBox(
+                  height: H*0.02,
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(4),
+                  child: Container(
+                    color: Colors.white,
+                    child: Padding(
+                      padding: const EdgeInsets.all(12),
+                      child: ListView.builder(
+                        physics: NeverScrollableScrollPhysics(),
+                        shrinkWrap: true,
+                        itemBuilder: (BuildContext context, int index) {
+                          return buildTextBankTransHistory();
+                        },
+                        itemCount: 5,
+                           ),
+                    ),
+                  ),
+                )
               ],
             ),
           ),
         ),
       ),
     );
+  }
+
+  Column buildTextBankTransHistory() {
+    return Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text("ICICI@1541",
+                                style: TextStyle(
+                                    fontSize: 15,
+                                    fontFamily: "Opensans-Regular"
+                                )
+                            ),
+                            Text("\$125.00",
+                                style: TextStyle(
+                                    fontSize: 15,
+                                    fontFamily: "Opensans-Regular"
+                                )
+                            )
+                          ],
+                        ),
+                        Text("02/05/2021",
+                            style: TextStyle(
+                                fontSize: 15,
+                                color: Color(0xFF929292),
+                                fontFamily: "Opensans-Regular"
+                            )
+                        ),
+                        Divider(
+                          color: Color(0xFFEBEBEB),
+                        )
+                      ],
+                    );
   }
 }
