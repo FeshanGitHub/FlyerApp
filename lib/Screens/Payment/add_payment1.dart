@@ -145,7 +145,9 @@ class _AddBankAccount1State extends State<AddBankAccount1> {
                       )),
                   SizedBox(height: H*0.15,),
                   InkWell(
-                    onTap: (){},
+                    onTap: (){
+                      Get.back();
+                    },
                     child: Container(
                       width: W*0.9,
                       height: H*0.08,

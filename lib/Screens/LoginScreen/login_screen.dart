@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flyerapp/Constants/colors.dart';
 import 'package:flyerapp/Screens/Face%20Recognition/face_recognition.dart';
+import 'package:flyerapp/Screens/Forgot%20password/forgot_password.dart';
 import 'package:flyerapp/Screens/Registeration/registeration.dart';
 import 'package:get/get.dart';
 
@@ -120,7 +121,9 @@ class _LoginScreenState extends State<LoginScreen> {
                     )),
                 SizedBox(height: H*0.04,),
                 InkWell(
-                  onTap: (){},
+                  onTap: (){
+                    Get.to(ForgotPassword());
+                  },
                   child: Text("Forgot Password?",
                     style: TextStyle
                       (
@@ -239,8 +242,6 @@ class _LoginScreenState extends State<LoginScreen> {
                       ),
                     ),
                     SizedBox(width: W*0.03,),
-
-
                   ],
                 ),
               ],

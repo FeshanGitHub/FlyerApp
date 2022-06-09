@@ -2,16 +2,15 @@ import 'package:circular_bottom_navigation/tab_item.dart';
 import 'package:flutter/material.dart';
 import 'package:flyerapp/Screens/HomePage/Deliveries/deliveries.dart';
 import 'package:flyerapp/Screens/HomePage/Help/help.dart';
-import 'package:flyerapp/Screens/HomePage/Invite/invite.dart';
-import 'package:flyerapp/Screens/HomePage/Payment/payment.dart';
-import 'package:flyerapp/Screens/HomePage/PreferedLocation/prefered_location.dart';
 import 'package:flyerapp/Screens/HomePage/Shipments/shipments.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import '../../Constants/colors.dart';
 import 'package:circular_bottom_navigation/circular_bottom_navigation.dart';
 import 'package:get/get.dart';
-
+import '../HomePage/Invite Friends/invite_friends.dart';
+import '../HomePage/PreferedLocation/prefered_loca_edit.dart';
 import '../Job Details/job_details.dart';
+import '../LoginScreen/login_screen.dart';
+import '../Payment/payment.dart';
 
 class JobSheet extends StatefulWidget {
   const JobSheet({Key? key,}) : super(key: key);
@@ -34,11 +33,11 @@ class _JobSheetState extends State<JobSheet> {
   late CircularBottomNavigationController _navigationController;
   var homePages = [
     Deliveries(),
-    PreferedLocMainMenu(),
+    PreferedLocaEdit(),
     Shipments(),
     Payment(),
     Help(),
-    Invite()
+    InviteFriends()
   ];
   @override
   void initState(){
@@ -305,6 +304,8 @@ class _JobSheetState extends State<JobSheet> {
         setState((){
           selectedCard = name;
           selectedIndex = index;
+          selectedItem(context,index);
+
         });
       },
       child: Card(
@@ -353,5 +354,41 @@ class _JobSheetState extends State<JobSheet> {
         ),
       ),
     );
+  }
+  selectedItem(BuildContext context, int index) {
+    switch(index){
+      case 0:
+        Get.to(Deliveries());
+    }
+    switch(index){
+      case 1:
+        Get.to(PreferedLocaEdit());
+        break;
+    }
+    switch(index){
+      case 2:
+        Get.to(Shipments());
+        break;
+    }
+    switch(index){
+      case 3:
+        Get.to(Payment());
+        break;
+    }
+    switch(index){
+      case 4:
+        Get.to(Help());
+        break;
+    }
+    switch(index){
+      case 5:
+        Get.to(InviteFriends());
+        break;
+    }
+    switch(index){
+      case 6:
+        Get.to(LoginScreen());
+        break;
+    }
   }
 }

@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import '../../Constants/colors.dart';
+
+import '../../../Constants/colors.dart';
+
 
 class PreferedLocaEdit extends StatefulWidget {
   const PreferedLocaEdit({Key? key}) : super(key: key);

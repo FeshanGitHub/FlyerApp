@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flyerapp/Screens/Payment/add_payment1.dart';
 import 'package:get/get.dart';
 import '../../Constants/colors.dart';
 
@@ -27,7 +28,7 @@ class _PaymentState extends State<Payment> {
                     Get.back();
                   },
                   child: Icon(Icons.arrow_back,color: Color(0xFF4D4D4D),))),
-          title: Text("Preferred Location"),
+          title: Text("Payment"),
           titleTextStyle: TextStyle(
             fontFamily: "OpenSans-Semibold",
             fontSize: 18  ,
@@ -204,25 +205,30 @@ class _PaymentState extends State<Payment> {
                 ),
               ),
               SizedBox(height: H*0.35,),
-              Container(
-                width: W*0.8,
-                height: H*0.08,
-                decoration: BoxDecoration(
-                    borderRadius: BorderRadius.all(Radius.circular(5)),
-                    gradient: LinearGradient(
-                        colors: [flyOrange1,flyOrange2],
-                        begin: Alignment.bottomLeft,
-                        end:  Alignment.topRight
-                    )
-                ),
-                child: Center(child:
-                Text("Add New Location",
-                  style: TextStyle(
-                      fontFamily: "Opensans-Bold",
-                      fontSize: 16,
-                      color: Colors.white
+              InkWell(
+                onTap: (){
+                  Get.to(AddBankAccount1());
+                },
+                child: Container(
+                  width: W*0.8,
+                  height: H*0.08,
+                  decoration: BoxDecoration(
+                      borderRadius: BorderRadius.all(Radius.circular(5)),
+                      gradient: LinearGradient(
+                          colors: [flyOrange1,flyOrange2],
+                          begin: Alignment.bottomLeft,
+                          end:  Alignment.topRight
+                      )
                   ),
-                )
+                  child: Center(child:
+                  Text("Add Bank Account",
+                    style: TextStyle(
+                        fontFamily: "Opensans-Bold",
+                        fontSize: 16,
+                        color: Colors.white
+                    ),
+                  )
+                  ),
                 ),
               ),
             ],

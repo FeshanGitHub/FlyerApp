@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flyerapp/Screens/LoginScreen/login_screen.dart';
 import 'package:get/get.dart';
 
 import '../../Constants/colors.dart';
@@ -142,7 +143,9 @@ class _ResetPasswordState extends State<ResetPassword> {
                 ),
                 SizedBox(height: H*0.1,),
                 InkWell(
-                  onTap: (){},
+                  onTap: (){
+                    Get.to(LoginScreen());
+                  },
                   child: Container(
                     width: W*0.9,
                     height: H*0.08,

@@ -3,16 +3,14 @@ import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/material.dart';
 import 'package:flyerapp/Screens/HomePage/Deliveries/deliveries.dart';
 import 'package:flyerapp/Screens/HomePage/Help/help.dart';
-import 'package:flyerapp/Screens/HomePage/Invite/invite.dart';
-import 'package:flyerapp/Screens/HomePage/Payment/payment.dart';
-import 'package:flyerapp/Screens/HomePage/PreferedLocation/prefered_location.dart';
 import 'package:flyerapp/Screens/HomePage/Shipments/shipments.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import '../../Constants/colors.dart';
 import 'package:circular_bottom_navigation/circular_bottom_navigation.dart';
 import 'package:get/get.dart';
-
-import '../Job Details/job_details.dart';
+import '../HomePage/Invite Friends/invite_friends.dart';
+import '../HomePage/PreferedLocation/prefered_loca_edit.dart';
+import '../LoginScreen/login_screen.dart';
+import '../Payment/payment.dart';
 
 class Profile extends StatefulWidget {
   const Profile({Key? key,}) : super(key: key);
@@ -35,11 +33,11 @@ class _ProfileState extends State<Profile> {
   late CircularBottomNavigationController _navigationController;
   var homePages = [
     Deliveries(),
-    PreferedLocMainMenu(),
+    PreferedLocaEdit(),
     Shipments(),
     Payment(),
     Help(),
-    Invite()
+    InviteFriends()
   ];
   @override
   void initState(){
@@ -217,12 +215,12 @@ class _ProfileState extends State<Profile> {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 SizedBox(height: H*0.1,),
-                              Stack(
-                                children: [
-                                  Align(
-                                    alignment: Alignment.topLeft
-                                    ,child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                Stack(
+                                  children: [
+                                    Align(
+                                      alignment: Alignment.topLeft
+                                      ,child: Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
                                       children: [
                                         Text("Name",
                                             style: TextStyle(
@@ -250,44 +248,44 @@ class _ProfileState extends State<Profile> {
                                         SizedBox(height: H*0.02,),
                                       ],
                                     ),
-                                  ),
-                                  Align(
-                                    alignment: Alignment.topRight
-                                    ,child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    children: [
-                                      Text(":  Griffin Rox",
-                                          style: TextStyle(
-                                              fontSize: 15,
-                                              fontFamily: "Opensans-Regular",
-                                              color: Colors.black
-                                          )
-                                      ),
-                                      SizedBox(height: H*0.02,),
-                                      Text(":  griffin@dummy.com",
-                                          style: TextStyle(
-                                              fontSize: 15,
-                                              fontFamily: "Opensans-Regular",
-                                              color: Colors.black
-                                          )
-                                      ),
-                                      SizedBox(height: H*0.02,),
-                                      Text(":  +1 654 789 3210",
-                                          style: TextStyle(
-                                              fontSize: 15,
-                                              fontFamily: "Opensans-Regular",
-                                              color: Colors.black
-                                          )
-                                      ),
-                                      SizedBox(height: H*0.02,),
-                                    ],
-                                  ),
-                                  ),
-                                ],
-                              ),
-                              Divider(
-                                color: flyGray4,
-                              ),
+                                    ),
+                                    Align(
+                                      alignment: Alignment.topRight
+                                      ,child: Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        Text(":  Griffin Rox",
+                                            style: TextStyle(
+                                                fontSize: 15,
+                                                fontFamily: "Opensans-Regular",
+                                                color: Colors.black
+                                            )
+                                        ),
+                                        SizedBox(height: H*0.02,),
+                                        Text(":  griffin@dummy.com",
+                                            style: TextStyle(
+                                                fontSize: 15,
+                                                fontFamily: "Opensans-Regular",
+                                                color: Colors.black
+                                            )
+                                        ),
+                                        SizedBox(height: H*0.02,),
+                                        Text(":  +1 654 789 3210",
+                                            style: TextStyle(
+                                                fontSize: 15,
+                                                fontFamily: "Opensans-Regular",
+                                                color: Colors.black
+                                            )
+                                        ),
+                                        SizedBox(height: H*0.02,),
+                                      ],
+                                    ),
+                                    ),
+                                  ],
+                                ),
+                                Divider(
+                                  color: flyGray4,
+                                ),
                                 SizedBox(
                                   height: H*0.02,
                                 ),
@@ -314,7 +312,7 @@ class _ProfileState extends State<Profile> {
                                   ),
                                 ),
                                 SizedBox(
-                                  height: H*0.02
+                                    height: H*0.02
                                 ),
                                 Row(
                                   mainAxisAlignment: MainAxisAlignment.center,
@@ -329,8 +327,8 @@ class _ProfileState extends State<Profile> {
                                         height: H*0.12,
                                         width: W*0.25,
                                         decoration: BoxDecoration(
-                                          color: Color(0xFFF3F3F3),
-                                          borderRadius: BorderRadius.all(Radius.circular(4))
+                                            color: Color(0xFFF3F3F3),
+                                            borderRadius: BorderRadius.all(Radius.circular(4))
                                         ),
                                         child: Row(
                                           mainAxisAlignment: MainAxisAlignment.center,
@@ -355,12 +353,12 @@ class _ProfileState extends State<Profile> {
                             onTap: (){},
                             child: Container(
                               decoration: BoxDecoration(
-                                shape: BoxShape.circle,
-                                boxShadow: [BoxShadow(
-                                  color: flyGray3,
-                                  offset: Offset(2,2),
-                                  blurRadius: 10,
-                                )]
+                                  shape: BoxShape.circle,
+                                  boxShadow: [BoxShadow(
+                                    color: flyGray3,
+                                    offset: Offset(2,2),
+                                    blurRadius: 10,
+                                  )]
                               ),
                               child: CircleAvatar(
                                 radius: 52,
@@ -448,30 +446,30 @@ class _ProfileState extends State<Profile> {
 
   Row buildTextProfile(double W,String title,String subTitle) {
     return Row(
-                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Text(title,
-                                        style: TextStyle(
-                                            fontSize: 15,
-                                            fontFamily: "Opensans-Regular",
-                                            color: Color(0xFF606060)
-                                        )
-                                    ),
-                                    SizedBox(width: W*0.25,),
-                                    Text(":",
-                                        style: TextStyle(
-                                            fontSize: 15,
-                                            fontFamily: "Opensans-Regular"
-                                        )
-                                    ),
-                                    Text(subTitle,
-                                        style: TextStyle(
-                                            fontSize: 15,
-                                            fontFamily: "Opensans-Regular"
-                                        )
-                                    ),
-                                  ],
-                                );
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Text(title,
+            style: TextStyle(
+                fontSize: 15,
+                fontFamily: "Opensans-Regular",
+                color: Color(0xFF606060)
+            )
+        ),
+        SizedBox(width: W*0.25,),
+        Text(":",
+            style: TextStyle(
+                fontSize: 15,
+                fontFamily: "Opensans-Regular"
+            )
+        ),
+        Text(subTitle,
+            style: TextStyle(
+                fontSize: 15,
+                fontFamily: "Opensans-Regular"
+            )
+        ),
+      ],
+    );
   }
   Container buildCardFlyer(double H, double W) {
     return Container(
@@ -565,6 +563,7 @@ class _ProfileState extends State<Profile> {
         setState((){
           selectedCard = name;
           selectedIndex = index;
+          selectedItem(context,index);
         });
       },
       child: Card(
@@ -613,5 +612,41 @@ class _ProfileState extends State<Profile> {
         ),
       ),
     );
+  }
+  selectedItem(BuildContext context, int index) {
+    switch(index){
+      case 0:
+        Get.to(Deliveries());
+    }
+    switch(index){
+      case 1:
+        Get.to(PreferedLocaEdit());
+        break;
+    }
+    switch(index){
+      case 2:
+        Get.to(Shipments());
+        break;
+    }
+    switch(index){
+      case 3:
+        Get.to(Payment());
+        break;
+    }
+    switch(index){
+      case 4:
+        Get.to(Help());
+        break;
+    }
+    switch(index){
+      case 5:
+        Get.to(InviteFriends());
+        break;
+    }
+    switch(index){
+      case 6:
+        Get.to(LoginScreen());
+        break;
+    }
   }
 }

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import '../../Constants/colors.dart';
+import '../../../Constants/colors.dart';
 
 class InviteFriends extends StatefulWidget {
   const InviteFriends({Key? key}) : super(key: key);
@@ -121,6 +121,9 @@ class _InviteFriendsState extends State<InviteFriends> {
                     onTap: (){
                       Get.defaultDialog(
                           title:"",
+                          onConfirm: (){
+                            Get.back();
+                          },
                           content: Column(
                             children: [
                               buildInviteCard(H, W, "assets/images/contacts.png"),
@@ -134,9 +137,7 @@ class _InviteFriendsState extends State<InviteFriends> {
                               ),
                               SizedBox(height: H*0.02,),
                               InkWell(
-                                onTap: (){
-                                  // registerUser();
-                                },
+                                onTap: (){},
                                 child: Container(
                                   width: W*0.8,
                                   height: H*0.08,

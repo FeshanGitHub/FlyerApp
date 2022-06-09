@@ -3,13 +3,13 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:flyerapp/Screens/LoginScreen/login_screen.dart';
-import 'package:flyerapp/Screens/PreferedLocation/prefered_location.dart';
 import 'package:flyerapp/main.dart';
 import '../../Constants/colors.dart';
 import 'package:dotted_border/dotted_border.dart';
 import 'package:get/get.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import '../Face Recognition/face_reco_registeration.dart';
+import '../HomePage/PreferedLocation/prefered_location.dart';
 
 class SignUpPage extends StatefulWidget {
   const SignUpPage({Key? key}) : super(key: key);
@@ -362,24 +362,25 @@ class _SignUpPageState extends State<SignUpPage> {
                   SizedBox(height: H*0.02,),
                   InkWell(
                     onTap: (){
-                      if(fullNameController.text.length < 3)
-                      {
-                      displayToastMessage("Name must be atleast 3 characters", context);
-                      }else if(!emailController.text.contains('@'))
-                      {
-                      displayToastMessage("Email address is not valid", context);
-                      }else if(phoneController.text.length != 10 )
-                      {
-                       displayToastMessage("Phone Number is not valid", context);
-                      }else if(passwordController.text.length < 6)
-                      {
-                        displayToastMessage("Password must be atleast 6 characters", context);
-                      }else if(passwordController.text.length != confirmPasswordController.text.length)
-                      {
-                        displayToastMessage("Password dose not match", context);
-                      }else{
-                        registerUser(context);
-                      }
+                      Get.to(PreferedLocation());
+                      // if(fullNameController.text.length < 3)
+                      // {
+                      // displayToastMessage("Name must be atleast 3 characters", context);
+                      // }else if(!emailController.text.contains('@'))
+                      // {
+                      // displayToastMessage("Email address is not valid", context);
+                      // }else if(phoneController.text.length != 10 )
+                      // {
+                      //  displayToastMessage("Phone Number is not valid", context);
+                      // }else if(passwordController.text.length < 6)
+                      // {
+                      //   displayToastMessage("Password must be atleast 6 characters", context);
+                      // }else if(passwordController.text.length != confirmPasswordController.text.length)
+                      // {
+                      //   displayToastMessage("Password dose not match", context);
+                      // }else{
+                      //   registerUser(context);
+                      // }
                     },
                     child: Container(
                       width: W*0.8,

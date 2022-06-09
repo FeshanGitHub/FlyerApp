@@ -7,15 +7,14 @@ import 'package:flyerapp/Screens/Forgot%20password/reset_password.dart';
 import 'package:flyerapp/Screens/Forgot%20password/verify_otp.dart';
 import 'package:flyerapp/Screens/HomePage/Deliveries/deliveries.dart';
 import 'package:flyerapp/Screens/HomePage/Help/help.dart';
+import 'package:flyerapp/Screens/HomePage/HomePage/homepage_main.dart';
 import 'package:flyerapp/Screens/HomePage/Shipments/shipments.dart';
-import 'package:flyerapp/Screens/Invite%20Friends/invite_friends.dart';
 import 'package:flyerapp/Screens/Job%20Sheet/job_sheet.dart';
 import 'package:flyerapp/Screens/JobSheetDetails/job_sheet_details.dart';
 import 'package:flyerapp/Screens/LoginScreen/login_screen.dart';
 import 'package:flyerapp/Screens/Notifications/notifications.dart';
 import 'package:flyerapp/Screens/Payment/add_payment2.dart';
 import 'package:flyerapp/Screens/Payment/payment.dart';
-import 'package:flyerapp/Screens/PreferedLocation/prefered_loca_edit.dart';
 import 'package:flyerapp/Screens/Profile/profile.dart';
 import 'package:flyerapp/Screens/Registeration/registeration.dart';
 import 'package:flyerapp/Screens/SplashScreen/splash_screen.dart';
@@ -27,7 +26,6 @@ import 'Screens/HomePage/homepage.dart';
 import 'Screens/HomePage/homepage.dart';
 import 'Screens/Job Details/job_details.dart';
 import 'Screens/JobTracking/job_tracking.dart';
-import 'Screens/PreferedLocation/prefered_location.dart';
 import 'package:firebase_database/firebase_database.dart';
 
 void main() async{
@@ -54,7 +52,7 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.blue,
       ),
       debugShowCheckedModeBanner: false,
-      home: Profile(),
+      home: SplashScreeen(),
     );
   }
 }

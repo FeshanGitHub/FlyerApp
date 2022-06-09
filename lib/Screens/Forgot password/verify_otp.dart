@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flyerapp/Screens/Forgot%20password/reset_password.dart';
 import 'package:get/get.dart';
 import '../../Constants/colors.dart';
 class VerifyOTP extends StatefulWidget {
@@ -71,7 +72,9 @@ class _VerifyOTPState extends State<VerifyOTP> {
                 ),
                 SizedBox(height: H*0.05,),
                 InkWell(
-                  onTap: (){},
+                  onTap: (){
+                    Get.to(ResetPassword());
+                  },
                   child: Container(
                     width: W*0.9,
                     height: H*0.08,
