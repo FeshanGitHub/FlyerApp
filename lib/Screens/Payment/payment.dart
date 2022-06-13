@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flyerapp/Screens/Payment/add_payment1.dart';
 import 'package:get/get.dart';
 import '../../Constants/colors.dart';
+import '../Notifications/notifications.dart';
 
 class Payment extends StatefulWidget {
   const Payment({Key? key}) : super(key: key);
@@ -36,23 +37,28 @@ class _PaymentState extends State<Payment> {
 
           ),
           titleSpacing: 2,
-          actions: [Padding(
-            padding:  EdgeInsets.only(right: W*0.04),
-            child: Center(
-              child: Stack(
-                children: [
-                  Icon(Icons.notifications_none_outlined,color: flyBlack2,),
-                  Padding(
-                    padding:  EdgeInsets.only(left: W*0.03,),
-                    child: CircleAvatar(
-                      backgroundColor: flyOrange2,
-                      radius: 7,
-                      child: Text("3",style: TextStyle(
-                          fontSize: 11
-                      ),),
-                    ),
-                  )
-                ],
+          actions: [InkWell(
+            onTap: (){
+              Get.to(Notifications());
+            },
+            child: Padding(
+              padding:  EdgeInsets.only(right: W*0.04),
+              child: Center(
+                child: Stack(
+                  children: [
+                    Icon(Icons.notifications_none_outlined,color: flyBlack2,),
+                    Padding(
+                      padding:  EdgeInsets.only(left: W*0.03,),
+                      child: CircleAvatar(
+                        backgroundColor: flyOrange2,
+                        radius: 7,
+                        child: Text("3",style: TextStyle(
+                            fontSize: 11
+                        ),),
+                      ),
+                    )
+                  ],
+                ),
               ),
             ),
           )],

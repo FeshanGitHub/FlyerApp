@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flyerapp/Screens/HomePage/homepage.dart';
 import 'package:get/get.dart';
 class FaceRecognition extends StatefulWidget {
   const FaceRecognition({Key? key}) : super(key: key);
@@ -42,20 +43,25 @@ class _FaceRecognitionState extends State<FaceRecognition> {
                  ),
                ),
                SizedBox(height: H*0.03,),
-               Container(
-                    height: H*0.77,
-                    width: W*0.9,
-                    padding: EdgeInsets.all(0),
-                    decoration: BoxDecoration(
-                      image: DecorationImage(
-                        image: AssetImage(
-                          "assets/images/face.png"
+               InkWell(
+                 onTap: (){
+                   Get.to(HomePage());
+                 },
+                 child: Container(
+                      height: H*0.77,
+                      width: W*0.9,
+                      padding: EdgeInsets.all(0),
+                      decoration: BoxDecoration(
+                        image: DecorationImage(
+                          image: AssetImage(
+                            "assets/images/face.png"
+                          ),
+                          fit: BoxFit.cover
                         ),
-                        fit: BoxFit.cover
+                        borderRadius: BorderRadius.all(Radius.circular(10))
                       ),
-                      borderRadius: BorderRadius.all(Radius.circular(10))
-                    ),
-                   )
+                     ),
+               )
              ],
            ),
          ),

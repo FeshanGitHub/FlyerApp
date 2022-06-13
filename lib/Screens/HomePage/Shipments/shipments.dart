@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flyerapp/Screens/JobSheetDetails/job_sheet_details.dart';
+import 'package:flyerapp/Screens/Notifications/notifications.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 
@@ -36,23 +38,28 @@ class _ShipmentsState extends State<Shipments> {
 
         ),
         titleSpacing: 2,
-        actions: [Padding(
-          padding:  EdgeInsets.only(right: W*0.04),
-          child: Center(
-            child: Stack(
-              children: [
-                Icon(Icons.notifications_none_outlined,color: flyBlack2,),
-                Padding(
-                  padding:  EdgeInsets.only(left: W*0.03,),
-                  child: CircleAvatar(
-                    backgroundColor: flyOrange2,
-                    radius: 7,
-                    child: Text("3",style: TextStyle(
-                        fontSize: 11
-                    ),),
-                  ),
-                )
-              ],
+        actions: [InkWell(
+          onTap: (){
+            Get.to(Notifications());
+          },
+          child: Padding(
+            padding:  EdgeInsets.only(right: W*0.04),
+            child: Center(
+              child: Stack(
+                children: [
+                  Icon(Icons.notifications_none_outlined,color: flyBlack2,),
+                  Padding(
+                    padding:  EdgeInsets.only(left: W*0.03,),
+                    child: CircleAvatar(
+                      backgroundColor: flyOrange2,
+                      radius: 7,
+                      child: Text("3",style: TextStyle(
+                          fontSize: 11
+                      ),),
+                    ),
+                  )
+                ],
+              ),
             ),
           ),
         )],
@@ -69,6 +76,7 @@ class _ShipmentsState extends State<Shipments> {
                     children: [
                       InkWell(
                           onTap: (){
+                            Get.to(JobSheetDetails());
                           },
                           child: buildCardFlyer(H, W)),
                       SizedBox(height: H*0.015,)

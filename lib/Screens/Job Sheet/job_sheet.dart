@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:flyerapp/Screens/HomePage/Deliveries/deliveries.dart';
 import 'package:flyerapp/Screens/HomePage/Help/help.dart';
 import 'package:flyerapp/Screens/HomePage/Shipments/shipments.dart';
+import 'package:flyerapp/Screens/JobSheetDetails/job_sheet_details.dart';
+import 'package:flyerapp/Screens/Start%20Job/start_job.dart';
 import '../../Constants/colors.dart';
 import 'package:circular_bottom_navigation/circular_bottom_navigation.dart';
 import 'package:get/get.dart';
@@ -20,30 +22,6 @@ class JobSheet extends StatefulWidget {
 }
 
 class _JobSheetState extends State<JobSheet> {
-  GlobalKey<ScaffoldState> scaffoldKey =GlobalKey<ScaffoldState>();
-  GlobalKey bottomNavigationKey = GlobalKey();
-  int selectedPos = 0;
-  var selectedCard = 'Deliveries';
-  var selectedIndex = 0;
-  List<TabItem> tableItems = List.of([
-    TabItem(Icons.home,"Home",flyOrange2,labelStyle: TextStyle(fontFamily: 'Roboto-Regular',color: Color(0xFF4D4D4D))),
-    TabItem(Icons.cases_rounded ,"Job Sheet",flyOrange2,labelStyle: TextStyle(fontFamily: 'Roboto-Regular',color: Color(0xFF4D4D4D))),
-    TabItem(Icons.person,"Profile",flyOrange2,labelStyle: TextStyle(fontFamily: 'Roboto-Regular',color: Color(0xFF4D4D4D))),
-  ]);
-  late CircularBottomNavigationController _navigationController;
-  var homePages = [
-    Deliveries(),
-    PreferedLocaEdit(),
-    Shipments(),
-    Payment(),
-    Help(),
-    InviteFriends()
-  ];
-  @override
-  void initState(){
-    super.initState();
-    _navigationController = CircularBottomNavigationController(selectedPos);
-  }
   @override
   Widget build(BuildContext context) {
     var H = MediaQuery.of(context).size.height;
@@ -52,139 +30,6 @@ class _JobSheetState extends State<JobSheet> {
       child: Scaffold(
         extendBody: true,
         backgroundColor: Color(0xFFF6F7F9),
-        key: scaffoldKey,
-        bottomNavigationBar: CircularBottomNavigation(
-          tableItems,
-          circleSize: 60,
-          iconsSize: 28,
-          barHeight: H*0.07,
-          controller: _navigationController,
-          normalIconColor: Color(0xFF4D4D4D),
-
-        ),
-        appBar: AppBar(
-          backgroundColor: Color(0xFFF6F7F9),
-          elevation: 0,
-          leading: InkWell(
-            onTap: (){
-              scaffoldKey.currentState?.openDrawer();
-            },
-            child: Container(
-                child: Image.asset("assets/images/drawer.png")),
-          ),
-          title: Text("Job Sheet Details"),
-          titleTextStyle: TextStyle(
-            fontFamily: "OpenSans-Semibold",
-            fontSize: 20,
-            color: Colors.black,
-
-          ),
-          titleSpacing: 2,
-          actions: [Padding(
-            padding:  EdgeInsets.only(right: W*0.04),
-            child: Center(
-              child: Stack(
-                children: [
-                  Icon(Icons.notifications_none_outlined,color: flyBlack2,),
-                  Padding(
-                    padding:  EdgeInsets.only(left: W*0.03,),
-                    child: CircleAvatar(
-                      backgroundColor: flyOrange2,
-                      radius: 7,
-                      child: Text("3",style: TextStyle(
-                          fontSize: 11
-                      ),),
-                    ),
-                  )
-                ],
-              ),
-            ),
-          )],
-        ),
-        drawer: Drawer(
-          child: Card(
-            color: Colors.white,
-            child: SingleChildScrollView(
-              child: Column(
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: [
-                      Builder(
-                        builder: (BuildContext context) { return IconButton(
-                          icon: Image.asset("assets/images/closed_drawer.png"),
-                          onPressed: () {
-                            return Scaffold.of(context).closeDrawer();
-                          },
-                        ); },
-                      ),
-                    ],
-                  ),
-                  Padding(
-                    padding:  EdgeInsets.only(left: W*0.015),
-                    child: Row(
-                      children: [
-                        InkWell(
-                          onTap: (){},
-                          child: CircleAvatar(
-                            radius: 35,
-                            backgroundColor: flyOrange3,
-                            child: CircleAvatar(
-                              radius: 33,
-                              foregroundColor: Colors.black,
-                              backgroundColor: Colors.white
-                              ,child: Container(
-                              height: H*0.12,
-                              decoration: BoxDecoration(
-                                  image: DecorationImage(
-                                    image: AssetImage("assets/images/registeration_prof_pic.png"),
-                                  )
-                              ),
-                            ),
-                            ),
-                          ),
-                        ),
-                        SizedBox(width: W*0.05,),
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text("John Doe",
-                              style: TextStyle(
-                                fontFamily: "Roboto-Medium",
-                                fontSize: 20,
-                              ),
-                            ),
-                            Text("info@johndoe.com",
-                              style: TextStyle(
-                                  fontFamily: "Gothic-Regular",
-                                  fontSize: 18,
-                                  color: Color(0xFFA8A8A8)
-                              ),
-                            ),
-                          ],
-                        )
-                      ],
-                    ),
-                  ),
-                  SizedBox(height: H*0.01,),
-                  Container(
-                    padding: EdgeInsets.only(right: W*0.06),
-                    child: Divider(
-                      color: Color(0xFFE0E0E0),
-                    ),
-                  ),
-                  buildDrawerCard(H,"assets/images/deliveries.png","  Deliveries",0),
-                  buildDrawerCard(H,"assets/images/prefered_location.png","  Prefered Location",1),
-                  buildDrawerCard(H,"assets/images/shipments.png","  Shipments",2),
-                  buildDrawerCard(H,"assets/images/payments.png","  Payments",3),
-                  buildDrawerCard(H,"assets/images/help.png","  Help",4),
-                  buildDrawerCard(H,"assets/images/invite.png","  Invite",5),
-                  buildDrawerCard(H,"assets/images/logout.png","  Logout",6),
-                ],
-              ),
-            ),
-          ),
-        ),
         body: SingleChildScrollView(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -199,7 +44,7 @@ class _JobSheetState extends State<JobSheet> {
                       children: [
                         InkWell(
                             onTap: (){
-                              Get.to(JobDetails());
+                              Get.to(StartJob());
                             },
                             child: buildCardFlyer(H, W)),
                         SizedBox(height: H*0.015,)
@@ -297,98 +142,5 @@ class _JobSheetState extends State<JobSheet> {
         ],
       ),
     );
-  }
-  InkWell buildDrawerCard(double H,String image,String name ,index) {
-    return InkWell(
-      onTap: (){
-        setState((){
-          selectedCard = name;
-          selectedIndex = index;
-          selectedItem(context,index);
-
-        });
-      },
-      child: Card(
-        elevation: 0,
-        color: selectedCard == name ? flyOrange2 : Colors.white,
-        child: Container(
-          padding: EdgeInsets.all(4),
-          child: Row(
-            children: [
-              CircleAvatar(
-                radius: 23,
-                backgroundColor: Color(0xFFD6D6D6),
-                child: CircleAvatar(
-                  radius: 22,
-                  foregroundColor: Colors.black,
-                  backgroundColor: Colors.white
-                  ,child: Center(
-                  child: Container(
-                    height: H*0.027,
-                    decoration: BoxDecoration(
-                        image: DecorationImage(
-                          image: AssetImage(image),
-                        )
-                    ),
-                  ),
-                ),
-                ),
-              ),
-              selectedCard == name ?
-              Text(  name,
-                style: TextStyle(
-                  color: Colors.white,
-                  fontFamily: "Roboto-Regular",
-                  fontSize: 18,
-                ),
-              ):
-              Text(  name,
-                style: TextStyle(
-                  color: Color(0xFF696969),
-                  fontFamily: "Roboto-Regular",
-                  fontSize: 18,
-                ),
-              ) ,
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-  selectedItem(BuildContext context, int index) {
-    switch(index){
-      case 0:
-        Get.to(Deliveries());
-    }
-    switch(index){
-      case 1:
-        Get.to(PreferedLocaEdit());
-        break;
-    }
-    switch(index){
-      case 2:
-        Get.to(Shipments());
-        break;
-    }
-    switch(index){
-      case 3:
-        Get.to(Payment());
-        break;
-    }
-    switch(index){
-      case 4:
-        Get.to(Help());
-        break;
-    }
-    switch(index){
-      case 5:
-        Get.to(InviteFriends());
-        break;
-    }
-    switch(index){
-      case 6:
-        Get.to(LoginScreen());
-        break;
-    }
   }
 }

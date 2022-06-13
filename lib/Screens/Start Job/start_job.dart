@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flyerapp/Screens/JobTracking/job_tracking.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 import '../../Constants/colors.dart';
@@ -323,7 +324,7 @@ class _StartJobState extends State<StartJob> {
             SizedBox(height: H*0.05,),
             InkWell(
               onTap: (){
-
+              Get.to(JobTracking());
               },
               child: Container(
                 width: W*0.9,

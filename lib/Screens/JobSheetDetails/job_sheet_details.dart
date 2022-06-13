@@ -1,4 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flyerapp/Screens/HomePage/homepage.dart';
+import 'package:flyerapp/Screens/Job%20Sheet/job_sheet.dart';
+import 'package:flyerapp/Screens/Job%20Sheet/job_sheet_main.dart';
+import 'package:flyerapp/Screens/Start%20Job/start_job.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 import '../../Constants/colors.dart';
@@ -31,7 +35,6 @@ class _JobSheetDetailsState extends State<JobSheetDetails> {
           fontFamily: "OpenSans-Semibold",
           fontSize: 20,
           color: Colors.black,
-
         ),
         titleSpacing: 2,
         actions: [Padding(
@@ -224,7 +227,7 @@ class _JobSheetDetailsState extends State<JobSheetDetails> {
             SizedBox(height: H*0.04,),
             InkWell(
               onTap: (){
-
+              Get.to(JobSheetMain());
               },
               child: Container(
                 width: W*0.9,

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flyerapp/Constants/colors.dart';
 import 'package:flyerapp/Screens/Face%20Recognition/face_recognition.dart';
 import 'package:flyerapp/Screens/Forgot%20password/forgot_password.dart';
+import 'package:flyerapp/Screens/HomePage/homepage.dart';
 import 'package:flyerapp/Screens/Registeration/registeration.dart';
 import 'package:get/get.dart';
 
@@ -135,7 +136,9 @@ class _LoginScreenState extends State<LoginScreen> {
                 ),
                 SizedBox(height: H*0.03),
                 InkWell(
-                  onTap: (){},
+                  onTap: (){
+                    Get.to(HomePage());
+                  },
                   child: Container(
                     width: W*0.85,
                     height: H*0.08,

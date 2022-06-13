@@ -3,6 +3,8 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 
 import '../../../Constants/colors.dart';
+import '../../Notifications/notifications.dart';
+import '../homepage.dart';
 
 
 class Deliveries extends StatefulWidget {
@@ -25,7 +27,7 @@ class _DeliveriesState extends State<Deliveries> {
         leading: Container(
             child: InkWell(
                 onTap: (){
-                  Get.back();
+                  Get.to(HomePage());
                 },
                 child: Icon(Icons.arrow_back,color: Color(0xFF4D4D4D),))),
         title: Text("Deliveries"),
@@ -36,23 +38,28 @@ class _DeliveriesState extends State<Deliveries> {
 
         ),
         titleSpacing: 2,
-        actions: [Padding(
-          padding:  EdgeInsets.only(right: W*0.04),
-          child: Center(
-            child: Stack(
-              children: [
-                Icon(Icons.notifications_none_outlined,color: flyBlack2,),
-                Padding(
-                  padding:  EdgeInsets.only(left: W*0.03,),
-                  child: CircleAvatar(
-                    backgroundColor: flyOrange2,
-                    radius: 7,
-                    child: Text("3",style: TextStyle(
-                        fontSize: 11
-                    ),),
-                  ),
-                )
-              ],
+        actions: [InkWell(
+          onTap: (){
+            Get.to(Notifications());
+          },
+          child: Padding(
+            padding:  EdgeInsets.only(right: W*0.04),
+            child: Center(
+              child: Stack(
+                children: [
+                  Icon(Icons.notifications_none_outlined,color: flyBlack2,),
+                  Padding(
+                    padding:  EdgeInsets.only(left: W*0.03,),
+                    child: CircleAvatar(
+                      backgroundColor: flyOrange2,
+                      radius: 7,
+                      child: Text("3",style: TextStyle(
+                          fontSize: 11
+                      ),),
+                    ),
+                  )
+                ],
+              ),
             ),
           ),
         )],

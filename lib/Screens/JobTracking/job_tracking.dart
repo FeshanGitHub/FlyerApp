@@ -1,6 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-
+import 'package:flyerapp/Screens/HomePage/Deliveries/deliveries.dart';
+import 'package:flyerapp/Screens/Take%20Picture/take_picture.dart';
+import 'package:get/get.dart';
 import '../../Constants/colors.dart';
 
 
@@ -31,10 +33,15 @@ class _JobTrackingState extends State<JobTracking> {
                   children: [
                     Row(
                       children: [
-                        Container(
-                            height: H*0.02,
-                            width: W*0.065,
-                            child: Image.asset("assets/images/back_arrow.png",)),
+                        InkWell(
+                          onTap: (){
+                            Get.back();
+                          },
+                          child: Container(
+                              height: H*0.02,
+                              width: W*0.065,
+                              child: Image.asset("assets/images/back_arrow.png",)),
+                        ),
                         Text("  Job Tracking",
                           style: TextStyle(
                               fontFamily: 'OpenSans-Semibold',
@@ -112,7 +119,9 @@ class _JobTrackingState extends State<JobTracking> {
                     ),
                     SizedBox(width: W*0.07,),
                     InkWell(
-                      onTap: (){},
+                      onTap: (){
+                        Get.to(Deliveries());
+                      },
                       child: Container(
                         width: W*0.42,
                         height: H*0.08,
@@ -135,7 +144,9 @@ class _JobTrackingState extends State<JobTracking> {
                   ],),
                 SizedBox(height: H*0.015,),
                 InkWell(
-                  onTap: (){},
+                  onTap: (){
+                    Get.to(TakePicture());
+                  },
                   child: Container(
                     width: W*0.8,
                     height: H*0.08,

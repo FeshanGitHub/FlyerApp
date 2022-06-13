@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flyerapp/Screens/HomePage/Shipments/shipments.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 import '../../Constants/colors.dart';
@@ -362,7 +363,9 @@ class _JobDetailsState extends State<JobDetails> {
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
                   InkWell(
-                    onTap: (){},
+                    onTap: (){
+                      Get.to(Shipments());
+                    },
                     child: Container(
                       width: W*0.42,
                       height: H*0.08,

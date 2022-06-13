@@ -17,25 +17,25 @@ import 'package:get/get.dart';
 
 import '../Job Details/job_details.dart';
 
-class HomePage extends StatefulWidget {
-  const HomePage({Key? key,}) : super(key: key);
+class JobSheetMain extends StatefulWidget {
+  const JobSheetMain({Key? key,}) : super(key: key);
 
   @override
-  State<HomePage> createState() => _HomePageState();
+  State<JobSheetMain> createState() => _JobSheetMainState();
 }
 
-class _HomePageState extends State<HomePage> {
+class _JobSheetMainState extends State<JobSheetMain> {
   GlobalKey<ScaffoldState> scaffoldKey =GlobalKey<ScaffoldState>();
   GlobalKey bottomNavigationKey = GlobalKey();
   var selectedCard = 'Deliveries';
   var selectedIndex = 0;
-  int _currentIndex = 0;
+  int _currentIndex = 1;
 
-   var screens = [
-     HomePageMain(),
-     JobSheet(),
-     Profile()
-   ];
+  var screens = [
+    HomePageMain(),
+    JobSheet(),
+    Profile()
+  ];
   var homePages = [
     Deliveries(),
     PreferedLocaEdit(),
@@ -76,21 +76,21 @@ class _HomePageState extends State<HomePage> {
             });
           },
         ),
-      appBar: AppBar(
-        backgroundColor: Color(0xFFF6F7F9),
-        elevation: 0,
-        leading: InkWell(
-          onTap: (){
-          scaffoldKey.currentState?.openDrawer();
-          },
-          child: Container(
-              child: Image.asset("assets/images/drawer.png")),
-        ),
-        actions: [InkWell(
-          onTap: (){
-            Get.to(Notifications());
-          },
-          child: Padding(
+        appBar: AppBar(
+          backgroundColor: Color(0xFFF6F7F9),
+          elevation: 0,
+          leading: InkWell(
+            onTap: (){
+              scaffoldKey.currentState?.openDrawer();
+            },
+            child: Container(
+                child: Image.asset("assets/images/drawer.png")),
+          ),
+          actions: [InkWell(
+            onTap: (){
+              Get.to(Notifications());
+            },
+            child: Padding(
               padding:  EdgeInsets.only(right: W*0.04),
               child: Center(
                 child: Stack(
@@ -110,8 +110,8 @@ class _HomePageState extends State<HomePage> {
                 ),
               ),
             ),
-        )],
-      ),
+          )],
+        ),
         drawer: Drawer(
           child: Card(
             color: Colors.white,
@@ -288,61 +288,61 @@ class _HomePageState extends State<HomePage> {
   }
   InkWell buildDrawerCard(double H,String image,String name ,index) {
     return InkWell(
-                  onTap: (){
-                    setState((){
-                    selectedCard = name;
-                    selectedIndex = index;
-                    selectedItem(context,index);
-                    });
-                  },
-                  child: Card(
-                    elevation: 0,
-                  color: selectedCard == name ? flyOrange2 : Colors.white,
+      onTap: (){
+        setState((){
+          selectedCard = name;
+          selectedIndex = index;
+          selectedItem(context,index);
+        });
+      },
+      child: Card(
+        elevation: 0,
+        color: selectedCard == name ? flyOrange2 : Colors.white,
+        child: Container(
+          padding: EdgeInsets.all(4),
+          child: Row(
+            children: [
+              CircleAvatar(
+                radius: 23,
+                backgroundColor: Color(0xFFD6D6D6),
+                child: CircleAvatar(
+                  radius: 22,
+                  foregroundColor: Colors.black,
+                  backgroundColor: Colors.white
+                  ,child: Center(
                   child: Container(
-                   padding: EdgeInsets.all(4),
-                  child: Row(
-                    children: [
-                      CircleAvatar(
-                        radius: 23,
-                        backgroundColor: Color(0xFFD6D6D6),
-                        child: CircleAvatar(
-                          radius: 22,
-                          foregroundColor: Colors.black,
-                          backgroundColor: Colors.white
-                          ,child: Center(
-                          child: Container(
-                            height: H*0.027,
-                            decoration: BoxDecoration(
-                                image: DecorationImage(
-                                  image: AssetImage(image),
-                                )
-                            ),
-                          ),
-                        ),
-                        ),
-                      ),
-                      selectedCard == name ?
-                      Text(  name,
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontFamily: "Roboto-Regular",
-                          fontSize: 18,
-                        ),
-                      ):
-                      Text(  name,
-                        style: TextStyle(
-                          color: Color(0xFF696969),
-                          fontFamily: "Roboto-Regular",
-                          fontSize: 18,
-                        ),
-                      ) ,
-                    ],
+                    height: H*0.027,
+                    decoration: BoxDecoration(
+                        image: DecorationImage(
+                          image: AssetImage(image),
+                        )
+                    ),
                   ),
-                  ),
-                  ),
-                );
+                ),
+                ),
+              ),
+              selectedCard == name ?
+              Text(  name,
+                style: TextStyle(
+                  color: Colors.white,
+                  fontFamily: "Roboto-Regular",
+                  fontSize: 18,
+                ),
+              ):
+              Text(  name,
+                style: TextStyle(
+                  color: Color(0xFF696969),
+                  fontFamily: "Roboto-Regular",
+                  fontSize: 18,
+                ),
+              ) ,
+            ],
+          ),
+        ),
+      ),
+    );
   }
-   selectedItem(BuildContext context, int index) {
+  selectedItem(BuildContext context, int index) {
     switch(index){
       case 0:
         Get.to(Deliveries());
