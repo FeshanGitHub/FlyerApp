@@ -1,17 +1,25 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flyerapp/Constants/colors.dart';
 import 'package:flyerapp/Screens/Face%20Recognition/face_recognition.dart';
 import 'package:flyerapp/Screens/Forgot%20password/forgot_password.dart';
 import 'package:flyerapp/Screens/HomePage/homepage.dart';
 import 'package:flyerapp/Screens/Registeration/registeration.dart';
+import 'package:flyerapp/main.dart';
 import 'package:get/get.dart';
 
+import '../../Widgets/progress_indicator.dart';
+
 class LoginScreen extends StatefulWidget {
+
   const LoginScreen({Key? key}) : super(key: key);
 
   @override
   State<LoginScreen> createState() => _LoginScreenState();
 }
+TextEditingController emailController = TextEditingController();
+TextEditingController passwordController = TextEditingController();
 
 class _LoginScreenState extends State<LoginScreen> {
   @override
@@ -54,7 +62,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     ),
                     InkWell(
                       onTap: (){
-                        Get.to(SignUpPage());
+                     Get.to(SignUpPage());
                       },
                       child: Text(" Create New Account",
                         style: TextStyle(
@@ -75,6 +83,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     ),
                     child: Center(
                       child: TextFormField(
+                      controller: emailController,
                       decoration: InputDecoration(
                         filled: true,
                         fillColor: Colors.white,
@@ -101,6 +110,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     ),
                     child: Center(
                       child: TextFormField(
+                        controller: passwordController,
                         obscureText: true,
                         obscuringCharacter: "*",
                         decoration: InputDecoration(
@@ -136,8 +146,15 @@ class _LoginScreenState extends State<LoginScreen> {
                 ),
                 SizedBox(height: H*0.03),
                 InkWell(
-                  onTap: (){
-                    Get.to(HomePage());
+                  onTap: (){if(!emailController.text.contains('@'))
+                  {
+                    displayToastMessage("Email address is not valid", context);
+                  }else if(passwordController.text.length < 6)
+                  {
+                    displayToastMessage("Password must be atleast 6 characters", context);
+                  }else{
+                    loginAndAuthenticateUser(context);
+                  }
                   },
                   child: Container(
                     width: W*0.85,
@@ -253,5 +270,32 @@ class _LoginScreenState extends State<LoginScreen> {
         ),
       ),
     );
+  }
+  final FirebaseAuth firebaseAuth = FirebaseAuth.instance;
+  void loginAndAuthenticateUser(BuildContext context) async
+  {
+    showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (BuildContext context){
+          return ProgressDialog(message: "  Authenticating,Please wait...",);
+        }
+    );
+    User? user = (await firebaseAuth.signInWithEmailAndPassword(
+        email: emailController.text.trim(),
+        password: passwordController.text.trim()).catchError(
+            (errorMsg)
+        {
+          Navigator.pop(context);
+          displayToastMessage("Error:" + errorMsg.toString(), context);
+        }
+    )).user;
+    if(user != null){
+      displayToastMessage("You are logged-in now", context);
+      Get.off(HomePage());
+    }else{
+      Navigator.pop(context);
+      displayToastMessage("message", context);
+    }
   }
 }

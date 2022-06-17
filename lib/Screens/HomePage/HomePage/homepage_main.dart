@@ -1,3 +1,5 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../../../Constants/colors.dart';
@@ -7,11 +9,28 @@ import '../../Job Details/job_details.dart';
 class HomePageMain extends StatefulWidget {
   const HomePageMain({Key? key,}) : super(key: key);
 
+
   @override
   State<HomePageMain> createState() => _HomePageMainState();
 }
 
 class _HomePageMainState extends State<HomePageMain> {
+  void initState(){
+    getData();
+    super.initState();
+  }
+  final FirebaseAuth firebaseAuth = FirebaseAuth.instance;
+  String name = "";
+  String email = "";
+
+  Future<void> getData() async {
+  User? user = firebaseAuth.currentUser;
+  final DocumentSnapshot userData = await FirebaseFirestore.instance.collection('Users').doc(user?.uid).get();
+  setState((){
+    name = userData.get('full_name');
+    email = userData.get('email');
+  });
+  }
   @override
   Widget build(BuildContext context) {
     var H = MediaQuery.of(context).size.height;
@@ -45,14 +64,14 @@ class _HomePageMainState extends State<HomePageMain> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          Text("Hello John",
+                          Text(name,
                             style: TextStyle(
                                 fontSize: 20,
                                 fontFamily: 'OpenSans-Bold',
                                 color: Colors.white
                             ),
                           ),
-                          Text("info@johndoe.com",
+                          Text(email,
                             style: TextStyle(
                                 fontSize: 15,
                                 fontFamily: 'OpenSans-Regular',

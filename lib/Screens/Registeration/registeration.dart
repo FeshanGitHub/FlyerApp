@@ -1,15 +1,21 @@
+import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:file_picker/file_picker.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:flyerapp/Screens/LoginScreen/login_screen.dart';
-import 'package:flyerapp/main.dart';
 import '../../Constants/colors.dart';
 import 'package:dotted_border/dotted_border.dart';
 import 'package:get/get.dart';
-import 'package:fluttertoast/fluttertoast.dart';
-import '../Face Recognition/face_reco_registeration.dart';
+import '../../Widgets/progress_indicator.dart';
 import '../HomePage/PreferedLocation/prefered_location.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:firebase_storage/firebase_storage.dart';
+import 'package:path/path.dart';
+
+
 
 class SignUpPage extends StatefulWidget {
   const SignUpPage({Key? key}) : super(key: key);
@@ -28,9 +34,12 @@ class _SignUpPageState extends State<SignUpPage> {
   bool hidePassword2 = true;
   bool checkBox = false;
   final formKey = GlobalKey<FormState>();
+  File? image;
+  File? file;
 
   @override
   Widget build(BuildContext context) {
+    final fileName = file != null ? basename(file!.path) : printError(info: 'No file selected');
     var H = MediaQuery.of(context).size.height;
     var W = MediaQuery.of(context).size.width;
     return SafeArea(
@@ -84,7 +93,73 @@ class _SignUpPageState extends State<SignUpPage> {
                   ),
                   InkWell(
                     onTap: (){
-                      Get.to(FaceRecoRegisteration());
+                     Get.defaultDialog(
+                       title: "Choose Option",
+                       titleStyle: TextStyle(color: flyOrange2),
+                       middleText: "",
+                       content: Column(
+                         children: [
+                           Padding(
+                             padding:  EdgeInsets.only(left: H*0.01,bottom: H*0.009),
+                             child: InkWell(
+                               onTap: (){
+                                 pickImage(ImageSource.camera);
+                               },
+                               child: Row(
+                                 children: [
+                                   Icon(Icons.camera,color: flyOrange2,),
+                                   Text(" Camera",
+                                     style: TextStyle(
+                                       fontFamily: "OpenSans-Regular",
+                                       fontSize: 14,
+                                       color: Colors.black,
+                                     ),
+                                   ),
+                                 ],
+                               ),
+                             ),
+                           ),
+                           InkWell(
+                             onTap:(){
+                               pickImage(ImageSource.gallery);
+                             },
+                             child: Padding(
+                               padding:  EdgeInsets.only(left: H*0.01,bottom: H*0.009),
+                               child: Row(
+                                 children: [
+                                   Icon(Icons.photo,color: flyOrange2,),
+                                   Text(" Gallery",
+                                     style: TextStyle(
+                                       fontFamily: "OpenSans-Regular",
+                                       fontSize: 14,
+                                       color: Colors.black,
+                                     ),
+                                   ),
+                                 ],
+                               ),
+                             ),
+                           ),
+                           Padding(
+                             padding:  EdgeInsets.only(left: H*0.01,bottom: H*0.009),
+                             child: InkWell(
+                               onTap: (){},
+                               child: Row(
+                                 children: [
+                                   Icon(Icons.remove_circle,color: flyOrange2,),
+                                   Text(" Remove",
+                                     style: TextStyle(
+                                       fontFamily: "OpenSans-Regular",
+                                       fontSize: 14,
+                                       color: Colors.black,
+                                     ),
+                                   ),
+                                 ],
+                               ),
+                             ),
+                           ),
+                         ],
+                       )
+                     );
                     },
                     child: CircleAvatar(
                       radius: 46,
@@ -92,15 +167,8 @@ class _SignUpPageState extends State<SignUpPage> {
                       child: CircleAvatar(
                         radius: 43,
                         foregroundColor: Colors.black,
-                        backgroundColor: Colors.white
-                        ,child: Container(
-                        height: H*0.12,
-                        decoration: BoxDecoration(
-                            image: DecorationImage(
-                              image: AssetImage("assets/images/registeration_prof_pic.png"),
-                            )
-                        ),
-                      ),
+                        backgroundColor: Colors.white,
+                        backgroundImage: image != null ? FileImage(image!)  as ImageProvider : AssetImage("assets/images/registeration_prof_pic.png"),
                       ),
                     ),
                   ),
@@ -146,6 +214,7 @@ class _SignUpPageState extends State<SignUpPage> {
                       child: Center(
                         child: TextFormField(
                           controller: phoneController,
+                          keyboardType: TextInputType.number,
                           decoration: InputDecoration(
                               filled: true,
                               fillColor: Colors.white,
@@ -289,32 +358,12 @@ class _SignUpPageState extends State<SignUpPage> {
                       borderRadius: BorderRadius.all(Radius.circular(8)),
                       border: Border.all(color: flyGray4,)
                     ),
-                    child: Center(
-                      child: DottedBorder(
-                        strokeWidth: 1,
-                        borderType: BorderType.RRect,
-                        radius: Radius.circular(8),
-                        dashPattern: [7,7],
-                        color: flyGray3,
-                        child: Container(
-                          height: H*0.1,
-                          width: W*0.65,
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Container(
-                                  height: H*0.025,
-                                  child: Image.asset("assets/images/upload_dl.png")),
-                              Text("  Upload Driving License",
-                              style: TextStyle(
-                                  fontSize: 13,
-                                  fontFamily: 'OpenSans-Medium',
-                                  color: flyBlack
-                              ),
-                              )
-                            ],
-                          ),
-                        ),
+                    child: InkWell(
+                      onTap: (){
+                        selectFile();
+                      },
+                      child: Center(
+                        child: file == null ? buildDottedBorderRegister(H, W) : buildUploadNoDotted(H),
                       ),
                     ),
                   ),
@@ -360,27 +409,33 @@ class _SignUpPageState extends State<SignUpPage> {
                     ),
                   ),
                   SizedBox(height: H*0.02,),
-                  InkWell(
+                  checkBox == true ? InkWell(
                     onTap: (){
-                      Get.to(PreferedLocation());
-                      // if(fullNameController.text.length < 3)
-                      // {
-                      // displayToastMessage("Name must be atleast 3 characters", context);
-                      // }else if(!emailController.text.contains('@'))
-                      // {
-                      // displayToastMessage("Email address is not valid", context);
-                      // }else if(phoneController.text.length != 10 )
-                      // {
-                      //  displayToastMessage("Phone Number is not valid", context);
-                      // }else if(passwordController.text.length < 6)
-                      // {
-                      //   displayToastMessage("Password must be atleast 6 characters", context);
-                      // }else if(passwordController.text.length != confirmPasswordController.text.length)
-                      // {
-                      //   displayToastMessage("Password dose not match", context);
-                      // }else{
-                      //   registerUser(context);
-                      // }
+                      if(fullNameController.text.length < 3)
+                      {
+                        displayToastMessage("Name must be atleast 3 characters", context);
+                      }else if(!emailController.text.contains('@'))
+                      {
+                        displayToastMessage("Email address is not valid", context);
+                      }else if(phoneController.text.length != 10 )
+                      {
+                        displayToastMessage("Phone Number is not valid", context);
+                      }else if(passwordController.text.length < 6)
+                      {
+                        displayToastMessage("Password must be atleast 6 characters", context);
+                      }else if(passwordController.text.length != confirmPasswordController.text.length)
+                      {
+                        displayToastMessage("Password dose not match", context);
+                      }else if(image == null){
+                        displayToastMessage("Please Upload Your Profile Picture", context);
+                      }else if(file == null){
+                        displayToastMessage("Please Upload Your Driving License", context);
+                      }
+                      else{
+                        registerUser(context);
+                        uploadPicture(context);
+                        uploadFile();
+                      }
                     },
                     child: Container(
                       width: W*0.8,
@@ -403,6 +458,22 @@ class _SignUpPageState extends State<SignUpPage> {
                       )
                       ),
                     ),
+                  ) : Container(
+                    width: W*0.8,
+                    height: H*0.08,
+                    decoration: BoxDecoration(
+                        borderRadius: BorderRadius.all(Radius.circular(5)),
+                        color: flyGray3
+                    ),
+                    child: Center(child:
+                    Text("Next",
+                      style: TextStyle(
+                          fontFamily: "Opensans-Bold",
+                          fontSize: 16,
+                          color: Colors.white
+                      ),
+                    )
+                    ),
                   ),
                   SizedBox(height: H*0.06,),
                 ],
@@ -413,7 +484,61 @@ class _SignUpPageState extends State<SignUpPage> {
       ),
     );
   }
+
+  Row buildUploadNoDotted(double H) {
+    return Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Container(
+                              height: H*0.025,
+                              child: Image.asset("assets/images/upload_dl.png")),
+                          Text("  Driving License Uploaded",
+                            style: TextStyle(
+                                fontSize: 13,
+                                fontFamily: 'OpenSans-Bold',
+                                color: flyBlack
+                            ),
+                          )
+                        ],
+                      );
+  }
+
+  DottedBorder buildDottedBorderRegister(double H, double W) {
+    return DottedBorder(
+                        strokeWidth: 1,
+                        borderType: BorderType.RRect,
+                        radius: Radius.circular(8),
+                        dashPattern: [7,7],
+                        color: flyGray3,
+                        child: Container(
+                          height: H*0.1,
+                          width: W*0.65,
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Container(
+                                  height: H*0.025,
+                                  child: Image.asset("assets/images/upload_dl.png")),
+                              Text("  Upload Driving License",
+                              style: TextStyle(
+                                  fontSize: 13,
+                                  fontFamily: 'OpenSans-Medium',
+                                  color: flyBlack
+                              ),
+                              )
+                            ],
+                          ),
+                        ),
+                      );
+  }
   Future registerUser(BuildContext context)async{
+    showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (BuildContext context){
+          return ProgressDialog(message: "Please wait...",);
+        }
+    );
     final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
     User? user = (await _firebaseAuth.createUserWithEmailAndPassword(
         email: emailController.text.trim(),
@@ -432,7 +557,9 @@ class _SignUpPageState extends State<SignUpPage> {
             "phone_number" : phoneController.text.trim(),
             "password" : passwordController.text.trim(),
             "confirm_password" : confirmPasswordController.text.trim(),
-            "id" : user.uid
+            "id" : user.uid,
+            "image" : image!.path,
+            "driving_license" : file!.path
           }
       );
       displayToastMessage("Congratulation, Your account has been created ", context);
@@ -442,7 +569,64 @@ class _SignUpPageState extends State<SignUpPage> {
       displayToastMessage("User has not been created", context);
     }
   }
+  Future uploadFile() async{
+    if(file == null) return;
+    final fileName = basename(file!.path);
+    final destination = 'driving_license/$fileName';
+    FirebaseApi.uploadFile(destination,file!);
+  }
 
+  Future selectFile()async {
+    final result = await FilePicker.platform.pickFiles(allowMultiple: false);
+    if(result == null) return;
+    final path = result.files.single.path!;
+    setState((){
+      file = File(path);
+    });
+  }
+
+  Future pickImage(ImageSource source) async{
+    try{
+      final image = await ImagePicker().pickImage(source:source);
+      if (image == null) return;
+      final imageTemporary = File(image.path);
+      setState((){
+        this.image = imageTemporary;
+        Get.back();
+      });
+    }on PlatformException catch (e){
+      print("Failed to pick image:$e");
+    }
+  }
+
+  Future uploadPicture(BuildContext context) async{
+    if(image == null) return null;
+    String fileName = basename(image!.path);
+    final destination = 'profile_picture/$fileName';
+    FirebaseApiForImage.uploadFile(destination, image!);
+  }
+
+}
+
+class FirebaseApi {
+  static UploadTask? uploadFile(String destination,File file){
+   try{
+     final ref = FirebaseStorage.instance.ref(destination);
+     return ref.putFile(file);
+   }on FirebaseException catch (e){
+     return null;
+   }
+  }
+}
+class FirebaseApiForImage {
+  static UploadTask? uploadFile(String destination,File image){
+    try{
+      final ref = FirebaseStorage.instance.ref(destination);
+      return ref.putFile(image);
+    }on FirebaseException catch (e){
+      return null;
+    }
+  }
 }
 displayToastMessage(String message,BuildContext context){
   Fluttertoast.showToast(msg: message);

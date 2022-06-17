@@ -1,4 +1,6 @@
 import 'package:circular_bottom_navigation/tab_item.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flyerapp/Screens/HomePage/Deliveries/deliveries.dart';
 import 'package:flyerapp/Screens/HomePage/Help/help.dart';
@@ -25,6 +27,22 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  void initState(){
+    getData();
+    super.initState();
+  }
+  final FirebaseAuth firebaseAuth = FirebaseAuth.instance;
+  String name = "";
+  String email = "";
+
+  Future<void> getData() async {
+    User? user = firebaseAuth.currentUser;
+    final DocumentSnapshot userData = await FirebaseFirestore.instance.collection('Users').doc(user?.uid).get();
+    setState((){
+      name = userData.get('full_name');
+      email = userData.get('email');
+    });
+  }
   GlobalKey<ScaffoldState> scaffoldKey =GlobalKey<ScaffoldState>();
   GlobalKey bottomNavigationKey = GlobalKey();
   var selectedCard = 'Deliveries';
@@ -159,16 +177,16 @@ class _HomePageState extends State<HomePage> {
                         Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text("John Doe",
+                            Text(name,
                               style: TextStyle(
                                 fontFamily: "Roboto-Medium",
-                                fontSize: 20,
+                                fontSize: 18,
                               ),
                             ),
-                            Text("info@johndoe.com",
+                            Text(email,
                               style: TextStyle(
                                   fontFamily: "Gothic-Regular",
-                                  fontSize: 18,
+                                  fontSize: 13,
                                   color: Color(0xFFA8A8A8)
                               ),
                             ),
