@@ -23,6 +23,7 @@ class _HomePageMainState extends State<HomePageMain> {
   String name = "";
   String email = "";
 
+
   Future<void> getData() async {
   User? user = firebaseAuth.currentUser;
   final DocumentSnapshot userData = await FirebaseFirestore.instance.collection('Users').doc(user?.uid).get();

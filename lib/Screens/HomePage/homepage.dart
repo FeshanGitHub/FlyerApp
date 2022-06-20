@@ -34,13 +34,14 @@ class _HomePageState extends State<HomePage> {
   final FirebaseAuth firebaseAuth = FirebaseAuth.instance;
   String name = "";
   String email = "";
-
+  String image = "";
   Future<void> getData() async {
     User? user = firebaseAuth.currentUser;
     final DocumentSnapshot userData = await FirebaseFirestore.instance.collection('Users').doc(user?.uid).get();
     setState((){
       name = userData.get('full_name');
       email = userData.get('email');
+      image = userData.get('image');
     });
   }
   GlobalKey<ScaffoldState> scaffoldKey =GlobalKey<ScaffoldState>();
@@ -158,19 +159,7 @@ class _HomePageState extends State<HomePage> {
                           child: CircleAvatar(
                             radius: 35,
                             backgroundColor: flyOrange3,
-                            child: CircleAvatar(
-                              radius: 33,
-                              foregroundColor: Colors.black,
-                              backgroundColor: Colors.white
-                              ,child: Container(
-                              height: H*0.12,
-                              decoration: BoxDecoration(
-                                  image: DecorationImage(
-                                    image: AssetImage("assets/images/registeration_prof_pic.png"),
-                                  )
-                              ),
-                            ),
-                            ),
+                            backgroundImage: NetworkImage(image),
                           ),
                         ),
                         SizedBox(width: W*0.05,),

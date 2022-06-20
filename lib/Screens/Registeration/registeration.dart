@@ -36,6 +36,8 @@ class _SignUpPageState extends State<SignUpPage> {
   final formKey = GlobalKey<FormState>();
   File? image;
   File? file;
+  String? downloadUrl1;
+  String? downloadUrl2;
 
   @override
   Widget build(BuildContext context) {
@@ -558,8 +560,8 @@ class _SignUpPageState extends State<SignUpPage> {
             "password" : passwordController.text.trim(),
             "confirm_password" : confirmPasswordController.text.trim(),
             "id" : user.uid,
-            "image" : image!.path,
-            "driving_license" : file!.path
+            "image" : downloadUrl2.toString(),
+            "driving_license" : downloadUrl1.toString()
           }
       );
       displayToastMessage("Congratulation, Your account has been created ", context);
@@ -570,10 +572,11 @@ class _SignUpPageState extends State<SignUpPage> {
     }
   }
   Future uploadFile() async{
-    if(file == null) return;
-    final fileName = basename(file!.path);
-    final destination = 'driving_license/$fileName';
-    FirebaseApi.uploadFile(destination,file!);
+    String postId = DateTime.now().millisecondsSinceEpoch.toString();
+    Reference reference = FirebaseStorage.instance.ref().child('images').child('post_$postId.jpg');
+    await reference.putFile(file!);
+    downloadUrl1 = await reference.getDownloadURL();
+    return downloadUrl1;
   }
 
   Future selectFile()async {
@@ -600,10 +603,11 @@ class _SignUpPageState extends State<SignUpPage> {
   }
 
   Future uploadPicture(BuildContext context) async{
-    if(image == null) return null;
-    String fileName = basename(image!.path);
-    final destination = 'profile_picture/$fileName';
-    FirebaseApiForImage.uploadFile(destination, image!);
+    String postId = DateTime.now().millisecondsSinceEpoch.toString();
+    Reference reference = FirebaseStorage.instance.ref().child('images').child('post_$postId.jpg');
+    await reference.putFile(file!);
+    downloadUrl2 = await reference.getDownloadURL();
+    return downloadUrl2;
   }
 
 }
