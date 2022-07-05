@@ -18,14 +18,14 @@ import 'package:path/path.dart';
 
 
 
-class SignUpPage extends StatefulWidget {
-  const SignUpPage({Key? key}) : super(key: key);
+class SignUpPageGoogle extends StatefulWidget {
+  const SignUpPageGoogle({Key? key}) : super(key: key);
 
   @override
-  State<SignUpPage> createState() => _SignUpPageState();
+  State<SignUpPageGoogle> createState() => _SignUpPageState();
 }
 
-class _SignUpPageState extends State<SignUpPage> {
+class _SignUpPageState extends State<SignUpPageGoogle> {
   TextEditingController emailController = TextEditingController();
   TextEditingController phoneController = TextEditingController();
   TextEditingController fullNameController = TextEditingController();
@@ -58,11 +58,11 @@ class _SignUpPageState extends State<SignUpPage> {
                     height: H*0.1,
                   ),
                   Text("Create New Account",
-                  style: TextStyle(
-                      fontFamily: 'OpenSans-Bold',
-                      fontSize: 22,
-                      fontWeight: FontWeight.bold
-                  ),
+                    style: TextStyle(
+                        fontFamily: 'OpenSans-Bold',
+                        fontSize: 22,
+                        fontWeight: FontWeight.bold
+                    ),
                   ),
                   SizedBox(
                     height: H*0.01,
@@ -95,75 +95,7 @@ class _SignUpPageState extends State<SignUpPage> {
                     height: H*0.03,
                   ),
                   InkWell(
-                    onTap: (){
-                     Get.defaultDialog(
-                       title: "Choose Option",
-                       titleStyle: TextStyle(color: flyOrange2),
-                       middleText: "",
-                       content: Column(
-                         children: [
-                           Padding(
-                             padding:  EdgeInsets.only(left: H*0.01,bottom: H*0.009),
-                             child: InkWell(
-                               onTap: (){
-                                 pickImage(ImageSource.camera);
-                               },
-                               child: Row(
-                                 children: [
-                                   Icon(Icons.camera,color: flyOrange2,),
-                                   Text(" Camera",
-                                     style: TextStyle(
-                                       fontFamily: "OpenSans-Regular",
-                                       fontSize: 14,
-                                       color: Colors.black,
-                                     ),
-                                   ),
-                                 ],
-                               ),
-                             ),
-                           ),
-                           InkWell(
-                             onTap:(){
-                               pickImage(ImageSource.gallery);
-                             },
-                             child: Padding(
-                               padding:  EdgeInsets.only(left: H*0.01,bottom: H*0.009),
-                               child: Row(
-                                 children: [
-                                   Icon(Icons.photo,color: flyOrange2,),
-                                   Text(" Gallery",
-                                     style: TextStyle(
-                                       fontFamily: "OpenSans-Regular",
-                                       fontSize: 14,
-                                       color: Colors.black,
-                                     ),
-                                   ),
-                                 ],
-                               ),
-                             ),
-                           ),
-                           Padding(
-                             padding:  EdgeInsets.only(left: H*0.01,bottom: H*0.009),
-                             child: InkWell(
-                               onTap: (){},
-                               child: Row(
-                                 children: [
-                                   Icon(Icons.remove_circle,color: flyOrange2,),
-                                   Text(" Remove",
-                                     style: TextStyle(
-                                       fontFamily: "OpenSans-Regular",
-                                       fontSize: 14,
-                                       color: Colors.black,
-                                     ),
-                                   ),
-                                 ],
-                               ),
-                             ),
-                           ),
-                         ],
-                       )
-                     );
-                    },
+                    onTap: (){},
                     child: CircleAvatar(
                       radius: 46,
                       backgroundColor: flyOrange3,
@@ -171,7 +103,15 @@ class _SignUpPageState extends State<SignUpPage> {
                         radius: 43,
                         foregroundColor: Colors.black,
                         backgroundColor: Colors.white,
-                        backgroundImage: image != null ? FileImage(image!)  as ImageProvider : AssetImage("assets/images/registeration_prof_pic.png"),
+                        child: Container(
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            image: DecorationImage(
+                              image: NetworkImage("${FirebaseAuth.instance.currentUser?.photoURL}"),
+                              fit: BoxFit.cover,
+                            )
+                          ),
+                        )
                       ),
                     ),
                   ),
@@ -186,7 +126,8 @@ class _SignUpPageState extends State<SignUpPage> {
                       ),
                       child: Center(
                         child: TextFormField(
-                          controller: fullNameController,
+                          controller: fullNameController..text = "${FirebaseAuth.instance.currentUser?.displayName}",
+                          readOnly: true,
                           decoration: InputDecoration(
                               filled: true,
                               fillColor: Colors.white,
@@ -199,9 +140,9 @@ class _SignUpPageState extends State<SignUpPage> {
                               focusedBorder: OutlineInputBorder(
                                   borderSide: BorderSide(color: Colors.black)
                               ),
-                            enabledBorder: OutlineInputBorder(
-                              borderSide: BorderSide(color: flyGray4)
-                            )
+                              enabledBorder: OutlineInputBorder(
+                                  borderSide: BorderSide(color: flyGray4)
+                              )
                           ),
                         ),
                       )),
@@ -247,7 +188,8 @@ class _SignUpPageState extends State<SignUpPage> {
                       ),
                       child: Center(
                         child: TextFormField(
-                          controller: emailController,
+                          readOnly: true,
+                          controller: emailController..text = "${FirebaseAuth.instance.currentUser?.email}",
                           decoration: InputDecoration(
                               filled: true,
                               fillColor: Colors.white,
@@ -282,9 +224,9 @@ class _SignUpPageState extends State<SignUpPage> {
                           decoration: InputDecoration(
                               suffixIcon: InkWell(
                                   onTap: (){
-                                 setState((){
-                                   hidePassword1 = !hidePassword1;
-                                 });
+                                    setState((){
+                                      hidePassword1 = !hidePassword1;
+                                    });
                                   },
                                   child: hidePassword1 ?
                                   Icon(Icons.visibility_outlined,color: flyGray3,) :
@@ -353,13 +295,13 @@ class _SignUpPageState extends State<SignUpPage> {
                     height: H*0.14,
                     width: W*0.85,
                     decoration: BoxDecoration(
-                      boxShadow: [BoxShadow(
-                        offset: Offset(0,2),
-                        color: flyGray4
-                      )],
-                      color: flyWhite,
-                      borderRadius: BorderRadius.all(Radius.circular(8)),
-                      border: Border.all(color: flyGray4,)
+                        boxShadow: [BoxShadow(
+                            offset: Offset(0,2),
+                            color: flyGray4
+                        )],
+                        color: flyWhite,
+                        borderRadius: BorderRadius.all(Radius.circular(8)),
+                        border: Border.all(color: flyGray4,)
                     ),
                     child: InkWell(
                       onTap: (){
@@ -379,28 +321,28 @@ class _SignUpPageState extends State<SignUpPage> {
                             checkColor: Colors.white,
                             activeColor: flyOrange2,
                             onChanged: (value)
-                        {
-                          setState((){
-                            checkBox = value!;
-                          });
-                        })
+                            {
+                              setState((){
+                                checkBox = value!;
+                              });
+                            })
                         ,Text("I Agree To",
-                        style: TextStyle(
-                            fontFamily: 'OpenSans-Light',
-                            shadows: [Shadow(
-                                color: flyGray3
-                                ,offset: Offset(1.2,1.2)
-                            )],
-                          fontSize: 13,
-                          color: flyBlack
-                        ),
+                          style: TextStyle(
+                              fontFamily: 'OpenSans-Light',
+                              shadows: [Shadow(
+                                  color: flyGray3
+                                  ,offset: Offset(1.2,1.2)
+                              )],
+                              fontSize: 13,
+                              color: flyBlack
+                          ),
                         ),
                         Text(" Terms & Conditions.",
                           style: TextStyle(
                               fontFamily: 'OpenSans-Medium',
                               shadows: [Shadow(
-                                color: flyGray3
-                                ,offset: Offset(1.5,1.5)
+                                  color: flyGray3
+                                  ,offset: Offset(1.5,1.5)
                               )],
                               fontSize: 13,
                               fontWeight: FontWeight.bold,
@@ -417,10 +359,8 @@ class _SignUpPageState extends State<SignUpPage> {
                       if(fullNameController.text.length < 3)
                       {
                         displayToastMessage("Name must be atleast 3 characters", context);
-                      }else if(!emailController.text.contains('@'))
-                      {
-                        displayToastMessage("Email address is not valid", context);
-                      }else if(phoneController.text.length != 10 )
+                      }
+                      else if(phoneController.text.length != 10 )
                       {
                         displayToastMessage("Phone Number is not valid", context);
                       }else if(passwordController.text.length < 6)
@@ -429,14 +369,12 @@ class _SignUpPageState extends State<SignUpPage> {
                       }else if(passwordController.text.length != confirmPasswordController.text.length)
                       {
                         displayToastMessage("Password dose not match", context);
-                      }else if(image == null){
-                        displayToastMessage("Please Upload Your Profile Picture", context);
-                      }else if(file == null){
+                      }
+                      else if(file == null){
                         displayToastMessage("Please Upload Your Driving License", context);
                       }
                       else{
                         registerUser(context);
-                        uploadPicture(context);
                         uploadFile();
                       }
                     },
@@ -490,49 +428,49 @@ class _SignUpPageState extends State<SignUpPage> {
 
   Row buildUploadNoDotted(double H) {
     return Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Container(
-                              height: H*0.025,
-                              child: Image.asset("assets/images/upload_dl.png")),
-                          Text("  Driving License Uploaded",
-                            style: TextStyle(
-                                fontSize: 13,
-                                fontFamily: 'OpenSans-Bold',
-                                color: flyBlack
-                            ),
-                          )
-                        ],
-                      );
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Container(
+            height: H*0.025,
+            child: Image.asset("assets/images/upload_dl.png")),
+        Text("  Driving License Uploaded",
+          style: TextStyle(
+              fontSize: 13,
+              fontFamily: 'OpenSans-Bold',
+              color: flyBlack
+          ),
+        )
+      ],
+    );
   }
 
   DottedBorder buildDottedBorderRegister(double H, double W) {
     return DottedBorder(
-                        strokeWidth: 1,
-                        borderType: BorderType.RRect,
-                        radius: Radius.circular(8),
-                        dashPattern: [7,7],
-                        color: flyGray3,
-                        child: Container(
-                          height: H*0.1,
-                          width: W*0.65,
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Container(
-                                  height: H*0.025,
-                                  child: Image.asset("assets/images/upload_dl.png")),
-                              Text("  Upload Driving License",
-                              style: TextStyle(
-                                  fontSize: 13,
-                                  fontFamily: 'OpenSans-Medium',
-                                  color: flyBlack
-                              ),
-                              )
-                            ],
-                          ),
-                        ),
-                      );
+      strokeWidth: 1,
+      borderType: BorderType.RRect,
+      radius: Radius.circular(8),
+      dashPattern: [7,7],
+      color: flyGray3,
+      child: Container(
+        height: H*0.1,
+        width: W*0.65,
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Container(
+                height: H*0.025,
+                child: Image.asset("assets/images/upload_dl.png")),
+            Text("  Upload Driving License",
+              style: TextStyle(
+                  fontSize: 13,
+                  fontFamily: 'OpenSans-Medium',
+                  color: flyBlack
+              ),
+            )
+          ],
+        ),
+      ),
+    );
   }
   Future registerUser(BuildContext context)async{
     showDialog(
@@ -542,34 +480,21 @@ class _SignUpPageState extends State<SignUpPage> {
           return ProgressDialog(message: "Please wait...",);
         }
     );
-    final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
-    User? user = (await _firebaseAuth.createUserWithEmailAndPassword(
-        email: emailController.text.trim(),
-        password: passwordController.text.trim()).catchError(
-            (errorMsg)
-        {
-          displayToastMessage("Error:" + errorMsg.toString(), context);
-        }
-    )).user;
-    if(user != null)
     {
-      FirebaseFirestore.instance.collection("Users").doc(user.uid).set(
+      FirebaseFirestore.instance.collection("Google Users").doc(FirebaseAuth.instance.currentUser?.uid).set(
           {
-            "full_name" : fullNameController.text.trim(),
-            "email" : emailController.text.trim(),
+            "full_name" : FirebaseAuth.instance.currentUser?.displayName,
+            "email" : FirebaseAuth.instance.currentUser?.email,
             "phone_number" : phoneController.text.trim(),
             "password" : passwordController.text.trim(),
             "confirm_password" : confirmPasswordController.text.trim(),
-            "id" : user.uid,
-            "image" : downloadUrl2.toString(),
+            "id" : FirebaseAuth.instance.currentUser?.uid,
+            "image" : FirebaseAuth.instance.currentUser?.photoURL,
             "driving_license" : downloadUrl1.toString()
           }
       );
       displayToastMessage("Congratulation, Your account has been created ", context);
       Get.to(PreferedLocation());
-    }else
-    {
-      displayToastMessage("User has not been created", context);
     }
   }
   Future uploadFile() async{
@@ -615,12 +540,12 @@ class _SignUpPageState extends State<SignUpPage> {
 
 class FirebaseApi {
   static UploadTask? uploadFile(String destination,File file){
-   try{
-     final ref = FirebaseStorage.instance.ref(destination);
-     return ref.putFile(file);
-   }on FirebaseException catch (e){
-     return null;
-   }
+    try{
+      final ref = FirebaseStorage.instance.ref(destination);
+      return ref.putFile(file);
+    }on FirebaseException catch (e){
+      return null;
+    }
   }
 }
 class FirebaseApiForImage {

@@ -2,6 +2,7 @@ import 'package:circular_bottom_navigation/tab_item.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:flyerapp/Screens/HomePage/Deliveries/deliveries.dart';
 import 'package:flyerapp/Screens/HomePage/Help/help.dart';
 import 'package:flyerapp/Screens/HomePage/HomePage/homepage_main.dart';
@@ -13,10 +14,10 @@ import 'package:flyerapp/Screens/LoginScreen/login_screen.dart';
 import 'package:flyerapp/Screens/Notifications/notifications.dart';
 import 'package:flyerapp/Screens/Payment/payment.dart';
 import 'package:flyerapp/Screens/Profile/profile.dart';
+import 'package:flyerapp/Screens/Registeration/registeration.dart';
 import '../../Constants/colors.dart';
 import 'package:circular_bottom_navigation/circular_bottom_navigation.dart';
 import 'package:get/get.dart';
-
 import '../Job Details/job_details.dart';
 
 class HomePage extends StatefulWidget {
@@ -71,6 +72,7 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
+    late CollectionReference userData = FirebaseFirestore.instance.collection("Users");
     var H = MediaQuery.of(context).size.height;
     var W = MediaQuery.of(context).size.width;
     return SafeArea(
@@ -159,17 +161,26 @@ class _HomePageState extends State<HomePage> {
                           child: CircleAvatar(
                             radius: 35,
                             backgroundColor: flyOrange3,
-                            backgroundImage: NetworkImage(image),
+                            child: Container(
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                image: DecorationImage(
+                                  fit: BoxFit.cover,
+                                  image: userData == null ? NetworkImage(FirebaseAuth.instance.currentUser!.photoURL!) : NetworkImage(image)
+                                )
+                              ),
+                            ),
                           ),
                         ),
                         SizedBox(width: W*0.05,),
                         Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text(name,
+                            Text(userData == null ? "${FirebaseAuth.instance.currentUser?.displayName}" :name,
                               style: TextStyle(
                                 fontFamily: "Roboto-Medium",
                                 fontSize: 18,
+                                color: Colors.black
                               ),
                             ),
                             Text(email,
@@ -381,8 +392,12 @@ class _HomePageState extends State<HomePage> {
     }
     switch(index){
       case 6:
-        Get.to(LoginScreen());
-        break;
+        FirebaseAuth.instance.signOut();
+        Get.offAll(LoginScreen());
+        Fluttertoast.showToast(msg: "You are now Logged off");
+        print("object");
     }
+
   }
 }
+

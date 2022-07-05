@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../../../Constants/colors.dart';
@@ -34,6 +35,8 @@ class _HomePageMainState extends State<HomePageMain> {
   }
   @override
   Widget build(BuildContext context) {
+
+    late CollectionReference userData = FirebaseFirestore.instance.collection("Users");
     var H = MediaQuery.of(context).size.height;
     var W = MediaQuery.of(context).size.width;
     return SafeArea(
@@ -65,14 +68,14 @@ class _HomePageMainState extends State<HomePageMain> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          Text(name,
+                          Text(userData == null ? "${FirebaseAuth.instance.currentUser?.displayName}" : name,
                             style: TextStyle(
                                 fontSize: 20,
                                 fontFamily: 'OpenSans-Bold',
                                 color: Colors.white
                             ),
                           ),
-                          Text(email,
+                          Text("${FirebaseAuth.instance.currentUser?.email}",
                             style: TextStyle(
                                 fontSize: 15,
                                 fontFamily: 'OpenSans-Regular',

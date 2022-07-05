@@ -1,13 +1,16 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:flyerapp/Constants/colors.dart';
 import 'package:flyerapp/Screens/Face%20Recognition/face_recognition.dart';
 import 'package:flyerapp/Screens/Forgot%20password/forgot_password.dart';
+import 'package:flyerapp/Screens/Google%20Sign%20In/google_sign_in.dart';
 import 'package:flyerapp/Screens/HomePage/homepage.dart';
 import 'package:flyerapp/Screens/Registeration/registeration.dart';
 import 'package:flyerapp/main.dart';
 import 'package:get/get.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 
 import '../../Widgets/progress_indicator.dart';
 
@@ -20,10 +23,29 @@ class LoginScreen extends StatefulWidget {
 }
 TextEditingController emailController = TextEditingController();
 TextEditingController passwordController = TextEditingController();
+final GoogleSignIn _googleSignIn = GoogleSignIn(
+  scopes: [
+    'email'
+  ]
+);
+GoogleSignInAccount? currentUser;
+
 
 class _LoginScreenState extends State<LoginScreen> {
+  final controller = Get.put(GoogleSignInControlller());
+  @override
+  void initState(){
+    _googleSignIn.onCurrentUserChanged.listen((account) {
+     setState((){
+       currentUser = account;
+     });
+    });
+    _googleSignIn.signInSilently();
+    super.initState();
+  }
   @override
   Widget build(BuildContext context) {
+    final FirebaseAuth _auth = FirebaseAuth.instance;
    var H = MediaQuery.of(context).size.height;
    var W = MediaQuery.of(context).size.width;
     return SafeArea(
@@ -221,7 +243,9 @@ class _LoginScreenState extends State<LoginScreen> {
                     ),
                     SizedBox(width: W*0.03,),
                     InkWell(
-                      onTap: (){},
+                      onTap: (){
+                        GoogleSignIn().signOut();
+                      },
                       child: CircleAvatar(
                         radius: 31,
                         backgroundColor: Colors.grey,
@@ -241,25 +265,34 @@ class _LoginScreenState extends State<LoginScreen> {
                       ),
                     ),
                     SizedBox(width: W*0.03,),
-                    InkWell(
-                      onTap: (){},
-                      child: CircleAvatar(
-                        radius: 31,
-                        backgroundColor: Colors.grey,
-                        child: CircleAvatar(
-                          radius: 30,
-                          foregroundColor: Colors.black,
-                          backgroundColor: Colors.white
-                          ,child: Container(
-                          height: H*0.035,
-                          decoration: BoxDecoration(
-                              image: DecorationImage(
-                                image: AssetImage("assets/images/google.png")
-                              )
+                    GetBuilder(
+                      init: Get.find<GoogleSignInControlller>(),
+                      builder: (GetxController loginController) {
+                        return  InkWell(
+                          onTap: (){
+                            controller.googleLogin().whenComplete(() async{
+
+                            });
+                          },
+                          child: CircleAvatar(
+                            radius: 31,
+                            backgroundColor: Colors.grey,
+                            child: CircleAvatar(
+                              radius: 30,
+                              foregroundColor: Colors.black,
+                              backgroundColor: Colors.white
+                              ,child: Container(
+                              height: H*0.035,
+                              decoration: BoxDecoration(
+                                  image: DecorationImage(
+                                      image: AssetImage("assets/images/google.png")
+                                  )
+                              ),
+                            ),
+                            ),
                           ),
-                        ),
-                        ),
-                      ),
+                        );
+                      },
                     ),
                     SizedBox(width: W*0.03,),
                   ],
@@ -292,10 +325,20 @@ class _LoginScreenState extends State<LoginScreen> {
     )).user;
     if(user != null){
       displayToastMessage("You are logged-in now", context);
-      Get.off(HomePage());
+      Get.off(SignUpPage());
     }else{
       Navigator.pop(context);
       displayToastMessage("message", context);
+    }
+  }
+  void signOut(){
+    _googleSignIn.disconnect();
+  }
+  Future<void> signIn() async{
+    try{
+      await _googleSignIn.signIn();
+    }catch(e){
+      print("Error:$e");
     }
   }
 }
