@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:file_picker/file_picker.dart';
@@ -5,6 +6,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:flyerapp/Screens/HomePage/homepage.dart';
 import 'package:flyerapp/Screens/LoginScreen/login_screen.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import '../../Constants/colors.dart';
@@ -15,6 +17,7 @@ import '../HomePage/PreferedLocation/prefered_location.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:path/path.dart';
+import 'package:http/http.dart' as http;
 
 
 
@@ -39,9 +42,32 @@ class _SignUpPageState extends State<SignUpPage> {
   File? file;
   String? downloadUrl1;
   String? downloadUrl2;
+  Future signUp() async {
+    var apiURL = "https://nodeserver.mydevfactory.com:8087/distributor/signup";
+    // Map mapData = {
+    //   "email": emailController.text.trim(),
+    //   "full_name": fullNameController.text.trim(),
+    //   "password": passwordController.text.trim(),
+    //   "confirm_password": confirmPasswordController.text.trim(),
+    //   "phone_number": phoneController.text.trim()
+    // };
+    Map mapData = {
+      "email": "khanfeshan2324@gnmail.com",
+      "full_name": "feshan",
+      "password": "qwerty",
+      "confirm_password": "qwerty",
+      "phone_number": "9930389046"
+    };
+    print("JSON DATA : ${mapData}");
+    http.Response response = await http.post(Uri.parse(apiURL), body: mapData);
+    var data = jsonDecode(response.body);
+    print("Data: ${data}");
+    Get.to(HomePage());
+  }
 
   @override
   Widget build(BuildContext context) {
+    signUp();
     final fileName = file != null ? basename(file!.path) : printError(info: 'No file selected');
     var H = MediaQuery.of(context).size.height;
     var W = MediaQuery.of(context).size.width;
@@ -412,7 +438,7 @@ class _SignUpPageState extends State<SignUpPage> {
                     ),
                   ),
                   SizedBox(height: H*0.02,),
-                  checkBox == true ? InkWell(
+                  checkBox == true  ? InkWell(
                     onTap: (){
                       if(fullNameController.text.length < 3)
                       {
@@ -429,13 +455,14 @@ class _SignUpPageState extends State<SignUpPage> {
                       }else if(passwordController.text.length != confirmPasswordController.text.length)
                       {
                         displayToastMessage("Password dose not match", context);
-                      }else if(image == null){
-                        displayToastMessage("Please Upload Your Profile Picture", context);
-                      }else if(file == null){
-                        displayToastMessage("Please Upload Your Driving License", context);
                       }
+                      // else if(image == null){
+                      //   displayToastMessage("Please Upload Your Profile Picture", context);
+                      // }else if(file == null){
+                      //   displayToastMessage("Please Upload Your Driving License", context);
+                      // }
                       else{
-                        registerUser(context);
+                        signUp();
                         uploadPicture(context);
                         uploadFile();
                       }
@@ -534,6 +561,23 @@ class _SignUpPageState extends State<SignUpPage> {
                         ),
                       );
   }
+  // Future signUp() async {
+  //   var apiURL = "https://nodeserver.mydevfactory.com:8087/distributor/login";
+  //   Map mapData = {
+  //     "email": emailController.text.trim(),
+  //     "password": passwordController.text.trim(),
+  //     "confirm_password":confirmPasswordController.text.trim(),
+  //     "phone_number" : phoneController.text.trim(),
+  //     "driving_license" :
+  //   };
+  //   print("JSON DATA : ${mapData}");
+  //   http.Response response = await http.post(Uri.parse(apiURL), body: mapData);
+  //
+  //   var data = jsonDecode(response.body);
+  //   print("Data: ${data}");
+  //
+  //   Get.to(HomePage());
+  // }
   Future registerUser(BuildContext context)async{
     showDialog(
         context: context,
@@ -572,6 +616,7 @@ class _SignUpPageState extends State<SignUpPage> {
       displayToastMessage("User has not been created", context);
     }
   }
+
   Future uploadFile() async{
     String postId = DateTime.now().millisecondsSinceEpoch.toString();
     Reference reference = FirebaseStorage.instance.ref().child('driving_license').child('post_$postId.jpg');
@@ -633,6 +678,7 @@ class FirebaseApiForImage {
     }
   }
 }
+
 displayToastMessage(String message,BuildContext context){
   Fluttertoast.showToast(msg: message);
 }

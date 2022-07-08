@@ -1,17 +1,20 @@
+import 'dart:convert';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:flyerapp/Constants/colors.dart';
+import 'package:flyerapp/Screens/Api/all_api.dart';
 import 'package:flyerapp/Screens/Face%20Recognition/face_recognition.dart';
 import 'package:flyerapp/Screens/Forgot%20password/forgot_password.dart';
 import 'package:flyerapp/Screens/Google%20Sign%20In/google_sign_in.dart';
 import 'package:flyerapp/Screens/HomePage/homepage.dart';
 import 'package:flyerapp/Screens/Registeration/registeration.dart';
+import 'package:flyerapp/Screens/User/user.dart';
 import 'package:flyerapp/main.dart';
 import 'package:get/get.dart';
 import 'package:google_sign_in/google_sign_in.dart';
-
+import 'package:http/http.dart' as http;
 import '../../Widgets/progress_indicator.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -21,8 +24,8 @@ class LoginScreen extends StatefulWidget {
   @override
   State<LoginScreen> createState() => _LoginScreenState();
 }
-TextEditingController emailController = TextEditingController();
-TextEditingController passwordController = TextEditingController();
+TextEditingController email  = TextEditingController();
+TextEditingController password = TextEditingController();
 final GoogleSignIn _googleSignIn = GoogleSignIn(
   scopes: [
     'email'
@@ -43,6 +46,8 @@ class _LoginScreenState extends State<LoginScreen> {
     _googleSignIn.signInSilently();
     super.initState();
   }
+  bool loading = false;
+
   @override
   Widget build(BuildContext context) {
     final FirebaseAuth _auth = FirebaseAuth.instance;
@@ -105,7 +110,18 @@ class _LoginScreenState extends State<LoginScreen> {
                     ),
                     child: Center(
                       child: TextFormField(
-                      controller: emailController,
+                      // validator: (value){
+                      // if(value == null || value.isEmpty){
+                      // return 'Enter your email address';
+                      // }else if (RegExp(
+                      //     r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
+                      //     .hasMatch(value)) {
+                      //   return null;
+                      // }else{
+                      //   return 'Please enter valid email address';
+                      // }
+                      // },
+                      controller: email,
                       decoration: InputDecoration(
                         filled: true,
                         fillColor: Colors.white,
@@ -132,7 +148,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     ),
                     child: Center(
                       child: TextFormField(
-                        controller: passwordController,
+                        controller: password,
                         obscureText: true,
                         obscuringCharacter: "*",
                         decoration: InputDecoration(
@@ -167,15 +183,24 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                 ),
                 SizedBox(height: H*0.03),
-                InkWell(
-                  onTap: (){if(!emailController.text.contains('@'))
+                loading ? Center(child: CircularProgressIndicator(color: flyOrange2,)) : InkWell(
+                  onTap: () async{if(!email.text.contains(RegExp(
+                      r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+")))
                   {
                     displayToastMessage("Email address is not valid", context);
-                  }else if(passwordController.text.length < 6)
+                  }else if(password.text.length < 6)
                   {
                     displayToastMessage("Password must be atleast 6 characters", context);
                   }else{
-                    loginAndAuthenticateUser(context);
+                   setState((){
+                     loading == true;
+                   });
+                   print('clicked');
+                   await AllApi().signIn(email.text.trim(), password.text.trim());
+                   setState((){
+                     loading == false;
+                   });
+                   Get.to(HomePage());
                   }
                   },
                   child: Container(
@@ -265,10 +290,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       ),
                     ),
                     SizedBox(width: W*0.03,),
-                    GetBuilder(
-                      init: Get.find<GoogleSignInControlller>(),
-                      builder: (GetxController loginController) {
-                        return  InkWell(
+                      InkWell(
                           onTap: (){
                             controller.googleLogin().whenComplete(() async{
 
@@ -291,8 +313,6 @@ class _LoginScreenState extends State<LoginScreen> {
                             ),
                             ),
                           ),
-                        );
-                      },
                     ),
                     SizedBox(width: W*0.03,),
                   ],
@@ -303,6 +323,20 @@ class _LoginScreenState extends State<LoginScreen> {
         ),
       ),
     );
+  }
+  Future signIn() async {
+    var apiURL = "https://nodeserver.mydevfactory.com:8087/distributor/login";
+    Map mapData = {
+      "email": email.text.trim(),
+      "password": password.text.trim()
+    };
+    print("JSON DATA : ${mapData}");
+    http.Response response = await http.post(Uri.parse(apiURL), body: mapData);
+
+    var data = jsonDecode(response.body);
+    print("Data: ${data}");
+
+    loading ? CircularProgressIndicator() : Get.to(HomePage());
   }
   final FirebaseAuth firebaseAuth = FirebaseAuth.instance;
   void loginAndAuthenticateUser(BuildContext context) async
@@ -315,8 +349,8 @@ class _LoginScreenState extends State<LoginScreen> {
         }
     );
     User? user = (await firebaseAuth.signInWithEmailAndPassword(
-        email: emailController.text.trim(),
-        password: passwordController.text.trim()).catchError(
+        email: email.text.trim(),
+        password: password.text.trim()).catchError(
             (errorMsg)
         {
           Navigator.pop(context);
@@ -326,19 +360,13 @@ class _LoginScreenState extends State<LoginScreen> {
     if(user != null){
       displayToastMessage("You are logged-in now", context);
       Get.off(SignUpPage());
-    }else{
+    }
+    else{
       Navigator.pop(context);
       displayToastMessage("message", context);
     }
   }
   void signOut(){
     _googleSignIn.disconnect();
-  }
-  Future<void> signIn() async{
-    try{
-      await _googleSignIn.signIn();
-    }catch(e){
-      print("Error:$e");
-    }
   }
 }

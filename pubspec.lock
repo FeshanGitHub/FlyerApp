@@ -290,7 +290,7 @@ packages:
     source: hosted
     version: "0.10.1+2"
   http:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: http
       url: "https://pub.dartlang.org"
@@ -387,13 +387,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "2.0.1"
-  nested:
-    dependency: transitive
+  modal_progress_hud_nsn:
+    dependency: "direct main"
     description:
-      name: nested
+      name: modal_progress_hud_nsn
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.0.0"
+    version: "0.2.1"
   path:
     dependency: transitive
     description:
@@ -422,13 +422,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "2.1.2"
-  provider:
-    dependency: "direct main"
-    description:
-      name: provider
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "6.0.3"
   quiver:
     dependency: transitive
     description:

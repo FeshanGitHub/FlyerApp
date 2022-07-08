@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:circular_bottom_navigation/tab_item.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -19,6 +21,9 @@ import '../../Constants/colors.dart';
 import 'package:circular_bottom_navigation/circular_bottom_navigation.dart';
 import 'package:get/get.dart';
 import '../Job Details/job_details.dart';
+import 'package:http/http.dart' as http;
+
+import '../UserModel/user_model.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key,}) : super(key: key);
@@ -32,6 +37,8 @@ class _HomePageState extends State<HomePage> {
     getData();
     super.initState();
   }
+
+
   final FirebaseAuth firebaseAuth = FirebaseAuth.instance;
   String name = "";
   String email = "";
@@ -69,7 +76,16 @@ class _HomePageState extends State<HomePage> {
     JobSheet(),
     Profile()
   ];
-
+  // Future apiCallLoginData()async{
+  //   http.Response response;
+  //   response = await http.get(Uri.parse("https://nodeserver.mydevfactory.com:8087/distributor/login"));
+  //   if(response.statusCode == 200){
+  //     setState((){
+  //       var stringRespone = response.body.length;
+  //       print(stringRespone);
+  //     });
+  //   }
+  // }
   @override
   Widget build(BuildContext context) {
     late CollectionReference userData = FirebaseFirestore.instance.collection("Users");

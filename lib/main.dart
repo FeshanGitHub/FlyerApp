@@ -28,6 +28,8 @@ import 'Screens/Job Details/job_details.dart';
 import 'Screens/JobTracking/job_tracking.dart';
 import 'package:firebase_database/firebase_database.dart';
 
+import 'Screens/Terms & Condition/terms_and_condition.dart';
+
 Future main() async{
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
