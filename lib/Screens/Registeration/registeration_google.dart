@@ -1,3 +1,6 @@
+import 'dart:async';
+import 'dart:async';
+import 'dart:convert';
 import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:file_picker/file_picker.dart';
@@ -5,6 +8,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:flyerapp/Screens/Api/all_api.dart';
 import 'package:flyerapp/Screens/LoginScreen/login_screen.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import '../../Constants/colors.dart';
@@ -15,8 +19,9 @@ import '../HomePage/PreferedLocation/prefered_location.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:path/path.dart';
-
-
+import 'package:dio/dio.dart' as dio;
+import 'package:path/path.dart';
+import 'package:http/http.dart' as http;
 
 class SignUpPageGoogle extends StatefulWidget {
   const SignUpPageGoogle({Key? key}) : super(key: key);
@@ -40,8 +45,10 @@ class _SignUpPageState extends State<SignUpPageGoogle> {
   String? downloadUrl1;
   String? downloadUrl2;
 
+
   @override
   Widget build(BuildContext context) {
+
     final fileName = file != null ? basename(file!.path) : printError(info: 'No file selected');
     var H = MediaQuery.of(context).size.height;
     var W = MediaQuery.of(context).size.width;
@@ -95,7 +102,75 @@ class _SignUpPageState extends State<SignUpPageGoogle> {
                     height: H*0.03,
                   ),
                   InkWell(
-                    onTap: (){},
+                    onTap: (){
+                      Get.defaultDialog(
+                          title: "Choose Option",
+                          titleStyle: TextStyle(color: flyOrange2),
+                          middleText: "",
+                          content: Column(
+                            children: [
+                              Padding(
+                                padding:  EdgeInsets.only(left: H*0.01,bottom: H*0.009),
+                                child: InkWell(
+                                  onTap: (){
+                                    pickImage(ImageSource.camera);
+                                  },
+                                  child: Row(
+                                    children: [
+                                      Icon(Icons.camera,color: flyOrange2,),
+                                      Text(" Camera",
+                                        style: TextStyle(
+                                          fontFamily: "OpenSans-Regular",
+                                          fontSize: 14,
+                                          color: Colors.black,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                              InkWell(
+                                onTap:(){
+                                  pickImage(ImageSource.gallery);
+                                },
+                                child: Padding(
+                                  padding:  EdgeInsets.only(left: H*0.01,bottom: H*0.009),
+                                  child: Row(
+                                    children: [
+                                      Icon(Icons.photo,color: flyOrange2,),
+                                      Text(" Gallery",
+                                        style: TextStyle(
+                                          fontFamily: "OpenSans-Regular",
+                                          fontSize: 14,
+                                          color: Colors.black,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                              Padding(
+                                padding:  EdgeInsets.only(left: H*0.01,bottom: H*0.009),
+                                child: InkWell(
+                                  onTap: (){},
+                                  child: Row(
+                                    children: [
+                                      Icon(Icons.remove_circle,color: flyOrange2,),
+                                      Text(" Remove",
+                                        style: TextStyle(
+                                          fontFamily: "OpenSans-Regular",
+                                          fontSize: 14,
+                                          color: Colors.black,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            ],
+                          )
+                      );
+                    },
                     child: CircleAvatar(
                       radius: 46,
                       backgroundColor: flyOrange3,
@@ -103,15 +178,7 @@ class _SignUpPageState extends State<SignUpPageGoogle> {
                         radius: 43,
                         foregroundColor: Colors.black,
                         backgroundColor: Colors.white,
-                        child: Container(
-                          decoration: BoxDecoration(
-                            shape: BoxShape.circle,
-                            image: DecorationImage(
-                              image: NetworkImage("${FirebaseAuth.instance.currentUser?.photoURL}"),
-                              fit: BoxFit.cover,
-                            )
-                          ),
-                        )
+                        backgroundImage: image != null ? FileImage(image!)  as ImageProvider : AssetImage("assets/images/registeration_prof_pic.png"),
                       ),
                     ),
                   ),
@@ -126,8 +193,7 @@ class _SignUpPageState extends State<SignUpPageGoogle> {
                       ),
                       child: Center(
                         child: TextFormField(
-                          controller: fullNameController..text = "${FirebaseAuth.instance.currentUser?.displayName}",
-                          readOnly: true,
+                          controller: fullNameController,
                           decoration: InputDecoration(
                               filled: true,
                               fillColor: Colors.white,
@@ -188,8 +254,7 @@ class _SignUpPageState extends State<SignUpPageGoogle> {
                       ),
                       child: Center(
                         child: TextFormField(
-                          readOnly: true,
-                          controller: emailController..text = "${FirebaseAuth.instance.currentUser?.email}",
+                          controller: emailController,
                           decoration: InputDecoration(
                               filled: true,
                               fillColor: Colors.white,
@@ -355,28 +420,70 @@ class _SignUpPageState extends State<SignUpPageGoogle> {
                   ),
                   SizedBox(height: H*0.02,),
                   checkBox == true ? InkWell(
-                    onTap: (){
-                      if(fullNameController.text.length < 3)
-                      {
-                        displayToastMessage("Name must be atleast 3 characters", context);
-                      }
-                      else if(phoneController.text.length != 10 )
-                      {
-                        displayToastMessage("Phone Number is not valid", context);
-                      }else if(passwordController.text.length < 6)
-                      {
-                        displayToastMessage("Password must be atleast 6 characters", context);
-                      }else if(passwordController.text.length != confirmPasswordController.text.length)
-                      {
-                        displayToastMessage("Password dose not match", context);
-                      }
-                      else if(file == null){
-                        displayToastMessage("Please Upload Your Driving License", context);
-                      }
-                      else{
-                        registerUser(context);
-                        uploadFile();
-                      }
+                    onTap: () async {
+                      // if(fullNameController.text.length < 3)
+                      // {
+                      //   displayToastMessage("Name must be atleast 3 characters", context);
+                      // }
+                      // else if(phoneController.text.length != 10 )
+                      // {
+                      //   displayToastMessage("Phone Number is not valid", context);
+                      // }else if(passwordController.text.length < 6)
+                      // {
+                      //   displayToastMessage("Password must be atleast 6 characters", context);
+                      // }else if(passwordController.text.length != confirmPasswordController.text.length)
+                      // {
+                      //   displayToastMessage("Password dose not match", context);
+                      // }
+                      // else if(file == null){
+                      //   displayToastMessage("Please Upload Your Driving License", context);
+                      // }
+                      // else{
+                      uploadImageCheck(
+                                fullNameController.text,
+                                emailController.text,
+                                passwordController.text,
+                                confirmPasswordController.text,
+                                phoneController.text,
+                      );
+                      // uploadDisplayPicture(
+                      //         fullNameController.text,
+                      //         emailController.text,
+                      //         passwordController.text,
+                      //         confirmPasswordController.text,
+                      //         phoneController.text,
+                      // );
+                      //   uploadFile();
+                      //   AllApi().registration(
+                      //       fullNameController.text,
+                      //       emailController.text,
+                      //       passwordController.text,
+                      //       confirmPasswordController.text,
+                      //       phoneController.text,
+                      //       image!,
+                      //       file!
+                      //   );
+
+                        // AllApi().registeration(
+                        //     fullNameController.text.trim(),
+                        //     emailController.text.trim(),
+                        //     passwordController.text.trim(),
+                        //     confirmPasswordController.text.trim(),
+                        //     phoneController.text.trim(),
+                        //     await dio.MultipartFile.fromFile(image!.path, filename: basename(image!.path)),
+                        //     await dio.MultipartFile.fromFile(file!.path, filename: basename(file!.path))
+                        // );
+
+
+                        // AllApi().uploadImage(
+                        //     fullNameController.text.trim(),
+                        //     emailController.text.trim(),
+                        //     passwordController.text.trim(),
+                        //     confirmPasswordController.text.trim(),
+                        //     phoneController.text.trim());
+                        // registerUser(context);
+                        // uploadFile();
+                      // }
                     },
                     child: Container(
                       width: W*0.8,
@@ -432,8 +539,12 @@ class _SignUpPageState extends State<SignUpPageGoogle> {
       children: [
         Container(
             height: H*0.025,
-            child: Image.asset("assets/images/upload_dl.png")),
-        Text("  Driving License Uploaded",
+            child: Padding(
+              padding:  EdgeInsets.only(right: Get.width*0.02),
+              child: Image.asset("assets/images/upload_dl.png"),
+            )),
+        Text(basename(file!.path),
+
           style: TextStyle(
               fontSize: 13,
               fontFamily: 'OpenSans-Bold',
@@ -472,6 +583,119 @@ class _SignUpPageState extends State<SignUpPageGoogle> {
       ),
     );
   }
+  Future uploadImageCheck(String fullName,email,password,confirmPassword,phoneNumber)async{
+    var bytes = File(image!.path).readAsBytesSync();
+    String base64Image = base64Encode(bytes);
+    print('upload proccess started');
+    var apiPostData = {
+      "full_name": fullName,
+      "email": email,
+      "password": password,
+      "confirm_password" : confirmPassword,
+      "phone_number" : phoneNumber,
+      "display_picture" : base64Image
+    };
+  http.Response  response = await http.post(Uri.parse("https://nodeserver.mydevfactory.com:8087/distributor/signup"),body: jsonEncode(apiPostData));
+  if(response.statusCode == 200){
+    print('successfull');
+    print('JSON : ${response.body}');
+  }else{
+    print('fail');
+  }
+  }
+
+  Future uploadDisplayPicture(fullName,email,password,confirmPassword,phoneNumber) async {
+
+    // print('file ${drivingLicense.path}');
+    // print('file ${displayPicture.path}');
+    var stream = http.ByteStream(image!.openRead());
+    stream.cast();
+    var length = await image!.length();
+
+
+    var request = http.MultipartRequest('POST',Uri.parse("https://nodeserver.mydevfactory.com:8087/distributor/signup",
+
+    ));
+    String value1 = '';
+    request.fields.addAll({
+      "full_name" : fullName,
+      "email": email,
+      "password": password,
+      "confirm_password" : confirmPassword,
+      "phone_number" : phoneNumber,
+    });
+    var multiPart = http.MultipartFile('display_picture',stream,length,filename: image!.path,);
+    request.files.add(multiPart);
+    var multiPart2 = http.MultipartFile('driving_license',stream,length,filename: file!.path,);
+    request.files.add(multiPart2);
+    var response = await request.send();
+    if(response.statusCode == 200){
+
+      print('Image Uploaded');
+      print('urlofpost = ${request.fields}');
+    }else{
+      print(response.statusCode);
+      print('fail');
+      print(image!.path);
+    }
+
+
+    // request.files.add(http.MultipartFile(
+    //     'display_picture', displayPicture.readAsBytes().asStream(), displayPicture.lengthSync(),
+    //     filename: basename(displayPicture.path)));
+    // request.files.add(http.MultipartFile(
+    //     'driving_license', drivingLicense.readAsBytes().asStream(), drivingLicense.lengthSync(),
+    //     filename: basename(drivingLicense.path)));
+
+
+
+    // await request.send().then((response) async {
+    //
+    //   print('response = ${response}');
+    //
+    //   if (response.statusCode == 200) {
+    //     response.stream
+    //         .transform(utf8.decoder)
+    //         .listen((value) {})
+    //         .onData((data) {
+    //       value1 = data;
+    //       print('MyData : $data');
+    //     });
+    //     return value1;
+    //
+    //   } else {
+    //     value1 = "Error";
+    //     print('MyData : ${response.statusCode} }');
+    //
+    //     return value1;
+    //   }
+    // });
+    // return value1;
+  }
+  Future<void> uploadImage()async{
+    var stream = http.ByteStream(image!.openRead());
+    stream.cast();
+    var length = await image!.length();
+    var uri = Uri.parse("https://nodeserver.mydevfactory.com:8087/distributor/signup");
+    var request =  http.MultipartRequest('POST',uri);
+    request.fields['full_name'] = 'title';
+    var multiPart = http.MultipartFile('display_picture',stream,length);
+
+    request.files.add(multiPart);
+    var response = await request.send();
+
+    if(response.statusCode == 200){
+      print('Image Uploaded');
+    }else{
+      print('fail');
+    }
+
+    try{
+
+    }catch(e){
+
+    }
+  }
   Future registerUser(BuildContext context)async{
     showDialog(
         context: context,
@@ -506,7 +730,11 @@ class _SignUpPageState extends State<SignUpPageGoogle> {
   }
 
   Future selectFile()async {
-    final result = await FilePicker.platform.pickFiles(allowMultiple: false);
+    final result = await FilePicker.platform.pickFiles(
+        allowMultiple: false,
+        type: FileType.custom,
+        allowedExtensions: ['pdf']
+    );
     if(result == null) return;
     final path = result.files.single.path!;
     setState((){

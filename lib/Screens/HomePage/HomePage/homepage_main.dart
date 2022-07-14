@@ -43,8 +43,6 @@ class _HomePageMainState extends State<HomePageMain> {
 
   @override
   Widget build(BuildContext context) {
-    var user = UserModel();
-    late CollectionReference userData = FirebaseFirestore.instance.collection("Users");
     var H = MediaQuery.of(context).size.height;
     var W = MediaQuery.of(context).size.width;
     return SafeArea(
@@ -136,7 +134,7 @@ class _HomePageMainState extends State<HomePageMain> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Text(userData == null ? "${FirebaseAuth.instance.currentUser?.displayName}" : name,
+                    Text(name,
                       style: TextStyle(
                           fontSize: 20,
                           fontFamily: 'OpenSans-Bold',

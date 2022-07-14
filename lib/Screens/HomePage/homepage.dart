@@ -192,7 +192,7 @@ class _HomePageState extends State<HomePage> {
                         Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text(userData == null ? "${FirebaseAuth.instance.currentUser?.displayName}" :name,
+                            Text(name,
                               style: TextStyle(
                                 fontFamily: "Roboto-Medium",
                                 fontSize: 18,
