@@ -6,7 +6,6 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:flyerapp/Screens/HomePage/Deliveries/deliveries.dart';
-import 'package:flyerapp/Screens/HomePage/Help/help.dart';
 import 'package:flyerapp/Screens/HomePage/HomePage/homepage_main.dart';
 import 'package:flyerapp/Screens/HomePage/Invite%20Friends/invite_friends.dart';
 import 'package:flyerapp/Screens/HomePage/PreferedLocation/prefered_loca_edit.dart';
@@ -24,6 +23,7 @@ import '../Job Details/job_details.dart';
 import 'package:http/http.dart' as http;
 
 import '../UserModel/user_model.dart';
+import 'Help/help.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key,}) : super(key: key);

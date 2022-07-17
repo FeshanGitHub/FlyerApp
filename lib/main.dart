@@ -6,7 +6,6 @@ import 'package:flyerapp/Screens/Forgot%20password/forgot_password.dart';
 import 'package:flyerapp/Screens/Forgot%20password/reset_password.dart';
 import 'package:flyerapp/Screens/Forgot%20password/verify_otp.dart';
 import 'package:flyerapp/Screens/HomePage/Deliveries/deliveries.dart';
-import 'package:flyerapp/Screens/HomePage/Help/help.dart';
 import 'package:flyerapp/Screens/HomePage/HomePage/homepage_main.dart';
 import 'package:flyerapp/Screens/HomePage/Shipments/shipments.dart';
 import 'package:flyerapp/Screens/Job%20Sheet/job_sheet.dart';
@@ -55,6 +54,7 @@ class MyApp extends StatelessWidget {
       ),
       debugShowCheckedModeBanner: false,
       home: SplashScreeen(),
+
     );
   }
 }

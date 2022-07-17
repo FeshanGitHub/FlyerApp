@@ -3,15 +3,17 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:flyerapp/Constants/colors.dart';
 import 'package:flyerapp/Screens/Api/all_api.dart';
 import 'package:flyerapp/Screens/Face%20Recognition/face_recognition.dart';
 import 'package:flyerapp/Screens/Forgot%20password/forgot_password.dart';
-import 'package:flyerapp/Screens/Google%20Sign%20In/google_sign_in.dart';
 import 'package:flyerapp/Screens/HomePage/homepage.dart';
 import 'package:flyerapp/Screens/Registeration/registeration.dart';
-import 'package:flyerapp/Screens/Registeration/registeration_google.dart';
+import 'package:flyerapp/Screens/Registeration/registeration.dart';
+import 'package:flyerapp/Screens/Registeration/registration_facebook.dart';
+import 'package:flyerapp/Screens/Registeration/registration_google.dart';
 import 'package:flyerapp/Screens/User/user.dart';
 import 'package:flyerapp/main.dart';
 import 'package:get/get.dart';
@@ -35,10 +37,9 @@ final GoogleSignIn _googleSignIn = GoogleSignIn(
   ]
 );
 GoogleSignInAccount? currentUser;
-
+String userEmail = "";
 
 class _LoginScreenState extends State<LoginScreen> {
-  final controller = Get.put(GoogleSignInControlller());
 
   @override
   void initState() {
@@ -56,14 +57,8 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     final FirebaseAuth _auth = FirebaseAuth.instance;
-    var H = MediaQuery
-        .of(context)
-        .size
-        .height;
-    var W = MediaQuery
-        .of(context)
-        .size
-        .width;
+    var H = MediaQuery.of(context).size.height;
+    var W = MediaQuery.of(context).size.width;
     return SafeArea(
       child: Scaffold(
         backgroundColor: Colors.white,
@@ -100,7 +95,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     ),
                     InkWell(
                       onTap: () {
-                        Get.to(SignUpPageGoogle());
+                        Get.to(Registration());
                       },
                       child: Text(" Create New Account",
                         style: TextStyle(
@@ -213,6 +208,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     } else {
                       setState(() {
                         loading == true;
+                        const CircularProgressIndicator(color: flyOrange2,);
                       });
                       print('clicked');
                       await AllApi().signIn(email.text.trim(), password.text.trim());
@@ -265,8 +261,14 @@ class _LoginScreenState extends State<LoginScreen> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     InkWell(
-                      onTap: () {
-                        Get.to(FaceRecognition());
+                      onTap: ()async {
+                        await FirebaseAuth.instance.signOut();
+                        userEmail = "";
+                        await FacebookAuth.instance.logOut();
+                        setState(() {
+
+                        });
+                        //GoogleSignIn().signOut();
                       },
                       child: CircleAvatar(
                         radius: 31,
@@ -290,7 +292,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     SizedBox(width: W * 0.03,),
                     InkWell(
                       onTap: () {
-                        GoogleSignIn().signOut();
+                        signInWithFacebook();
                       },
                       child: CircleAvatar(
                         radius: 31,
@@ -314,9 +316,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     SizedBox(width: W * 0.03,),
                     InkWell(
                       onTap: () {
-                        controller.googleLogin().whenComplete(() async {
-
-                        });
+                       googleLogin();
                       },
                       child: CircleAvatar(
                         radius: 31,
@@ -345,6 +345,61 @@ class _LoginScreenState extends State<LoginScreen> {
         ),
       ),
     );
+  }
+  googleLogin() async {
+    print("googleLogin method Called");
+    GoogleSignIn _googleSignIn = GoogleSignIn();
+    try {
+      var reslut = await _googleSignIn.signIn();
+      if (reslut == null) {
+        return;
+      }
+
+      final userData = await reslut.authentication;
+      final credential = GoogleAuthProvider.credential(
+          accessToken: userData.accessToken, idToken: userData.idToken);
+      var finalResult = await FirebaseAuth.instance.signInWithCredential(credential);
+      print("Result $reslut");
+      print(reslut.displayName);
+      print(reslut.email);
+      print(reslut.photoUrl);
+      Get.to(GoogleSignInRegistration());
+
+    } catch (error) {
+      print(error);
+    }
+  }
+  Future facebookLogin() async {
+    print("FaceBook");
+    try {
+      final result =
+      await FacebookAuth.i.login(permissions: ['public_profile', 'email']);
+      if (result.status == LoginStatus.success) {
+        final userData = await FacebookAuth.i.getUserData();
+        print(userData);
+      }
+    } catch (error) {
+      print(error);
+    }
+  }
+  Future <UserCredential> signInWithFacebook()async{
+    final LoginResult loginResult = await FacebookAuth.instance.login(
+      permissions: ['email','public_profile','user_birthday']
+    );
+
+    final OAuthCredential facebookAuthCredential = FacebookAuthProvider.credential(loginResult.accessToken!.token);
+
+
+    final userData = await FacebookAuth.instance.getUserData();
+    print(userData);
+
+    final userEmail = userData['email'];
+    print(userEmail);
+    if(loginResult.status == LoginStatus.success){
+      Get.to(FacebookRegistration());
+    }
+    return FirebaseAuth.instance.signInWithCredential(facebookAuthCredential);
+
   }
 
   Future signIn() async {

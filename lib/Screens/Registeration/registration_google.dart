@@ -22,14 +22,14 @@ import 'package:dio/dio.dart' as dio;
 import 'package:path/path.dart';
 import 'package:http/http.dart' as http;
 import 'dart:io' as Io;
-class Registration extends StatefulWidget {
-  const Registration({Key? key}) : super(key: key);
+class GoogleSignInRegistration extends StatefulWidget {
+  const GoogleSignInRegistration({Key? key}) : super(key: key);
 
   @override
-  State<Registration> createState() => _RegistrationState();
+  State<GoogleSignInRegistration> createState() => _GoogleSignInRegistrationState();
 }
 
-class _RegistrationState extends State<Registration> {
+class _GoogleSignInRegistrationState extends State<GoogleSignInRegistration> {
   TextEditingController emailController = TextEditingController();
   TextEditingController phoneController = TextEditingController();
   TextEditingController fullNameController = TextEditingController();
@@ -192,7 +192,8 @@ class _RegistrationState extends State<Registration> {
                       ),
                       child: Center(
                         child: TextFormField(
-                          controller: fullNameController,
+                          readOnly: true,
+                          controller: fullNameController..text = '${FirebaseAuth.instance.currentUser!.displayName}',
                           decoration: InputDecoration(
                               filled: true,
                               fillColor: Colors.white,
@@ -253,7 +254,8 @@ class _RegistrationState extends State<Registration> {
                       ),
                       child: Center(
                         child: TextFormField(
-                          controller: emailController,
+                          readOnly: true,
+                          controller: emailController..text = '${FirebaseAuth.instance.currentUser!.email}',
                           decoration: InputDecoration(
                               filled: true,
                               fillColor: Colors.white,
@@ -438,17 +440,17 @@ class _RegistrationState extends State<Registration> {
                       //   displayToastMessage("Please Upload Your Driving License", context);
                       // }
                       // else{
-                        AllApi().signUp(
-                              fullNameController.text.trim(),
-                              emailController.text.trim(),
-                              passwordController.text.trim(),
-                              confirmPasswordController.text.trim(),
-                              phoneController.text.trim(),
-                              image!,
-                              file!
-                        );
-                        // registerUser(context);
-                        // uploadFile();
+                      AllApi().signUp(
+                          fullNameController.text.trim(),
+                          emailController.text.trim(),
+                          passwordController.text.trim(),
+                          confirmPasswordController.text.trim(),
+                          phoneController.text.trim(),
+                          image!,
+                          file!
+                      );
+                      // registerUser(context);
+                      // uploadFile();
                       // }
                     },
                     child: Container(
@@ -582,15 +584,15 @@ class _RegistrationState extends State<Registration> {
       "confirm_password" : confirmPassword,
       "phone_number" : phoneNumber,
     });
-  http.Response  response = await http.post(Uri.parse("https://nodeserver.mydevfactory.com:8087/distributor/signup"),body: apiPostData);
-  if(response.statusCode == 200){
-    print('successfull');
-    print('JSON : ${response.body}');
-  }else{
-    print(base64Image);
-    print(response.body);
-    print('fail');
-  }
+    http.Response  response = await http.post(Uri.parse("https://nodeserver.mydevfactory.com:8087/distributor/signup"),body: apiPostData);
+    if(response.statusCode == 200){
+      print('successfull');
+      print('JSON : ${response.body}');
+    }else{
+      print(base64Image);
+      print(response.body);
+      print('fail');
+    }
   }
 
   Future uploadDisplayPicture(fullName,email,password,confirmPassword,phoneNumber) async {

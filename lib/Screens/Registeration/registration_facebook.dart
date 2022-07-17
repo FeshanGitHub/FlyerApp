@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -22,15 +21,15 @@ import 'package:path/path.dart';
 import 'package:dio/dio.dart' as dio;
 import 'package:path/path.dart';
 import 'package:http/http.dart' as http;
-
-class SignUpPageGoogle extends StatefulWidget {
-  const SignUpPageGoogle({Key? key}) : super(key: key);
+import 'dart:io' as Io;
+class FacebookRegistration extends StatefulWidget {
+  const FacebookRegistration({Key? key}) : super(key: key);
 
   @override
-  State<SignUpPageGoogle> createState() => _SignUpPageState();
+  State<FacebookRegistration> createState() => _FacebookRegistrationState();
 }
 
-class _SignUpPageState extends State<SignUpPageGoogle> {
+class _FacebookRegistrationState extends State<FacebookRegistration> {
   TextEditingController emailController = TextEditingController();
   TextEditingController phoneController = TextEditingController();
   TextEditingController fullNameController = TextEditingController();
@@ -193,7 +192,8 @@ class _SignUpPageState extends State<SignUpPageGoogle> {
                       ),
                       child: Center(
                         child: TextFormField(
-                          controller: fullNameController,
+                          readOnly: true,
+                          controller: fullNameController..text = '${FirebaseAuth.instance.currentUser!.displayName}',
                           decoration: InputDecoration(
                               filled: true,
                               fillColor: Colors.white,
@@ -254,7 +254,8 @@ class _SignUpPageState extends State<SignUpPageGoogle> {
                       ),
                       child: Center(
                         child: TextFormField(
-                          controller: emailController,
+                          readOnly: true,
+                          controller: emailController..text = '${FirebaseAuth.instance.currentUser!.email}',
                           decoration: InputDecoration(
                               filled: true,
                               fillColor: Colors.white,
@@ -439,50 +440,17 @@ class _SignUpPageState extends State<SignUpPageGoogle> {
                       //   displayToastMessage("Please Upload Your Driving License", context);
                       // }
                       // else{
-                      uploadImageCheck(
-                                fullNameController.text,
-                                emailController.text,
-                                passwordController.text,
-                                confirmPasswordController.text,
-                                phoneController.text,
+                      AllApi().signUp(
+                          fullNameController.text.trim(),
+                          emailController.text.trim(),
+                          passwordController.text.trim(),
+                          confirmPasswordController.text.trim(),
+                          phoneController.text.trim(),
+                          image!,
+                          file!
                       );
-                      // uploadDisplayPicture(
-                      //         fullNameController.text,
-                      //         emailController.text,
-                      //         passwordController.text,
-                      //         confirmPasswordController.text,
-                      //         phoneController.text,
-                      // );
-                      //   uploadFile();
-                      //   AllApi().registration(
-                      //       fullNameController.text,
-                      //       emailController.text,
-                      //       passwordController.text,
-                      //       confirmPasswordController.text,
-                      //       phoneController.text,
-                      //       image!,
-                      //       file!
-                      //   );
-
-                        // AllApi().registeration(
-                        //     fullNameController.text.trim(),
-                        //     emailController.text.trim(),
-                        //     passwordController.text.trim(),
-                        //     confirmPasswordController.text.trim(),
-                        //     phoneController.text.trim(),
-                        //     await dio.MultipartFile.fromFile(image!.path, filename: basename(image!.path)),
-                        //     await dio.MultipartFile.fromFile(file!.path, filename: basename(file!.path))
-                        // );
-
-
-                        // AllApi().uploadImage(
-                        //     fullNameController.text.trim(),
-                        //     emailController.text.trim(),
-                        //     passwordController.text.trim(),
-                        //     confirmPasswordController.text.trim(),
-                        //     phoneController.text.trim());
-                        // registerUser(context);
-                        // uploadFile();
+                      // registerUser(context);
+                      // uploadFile();
                       // }
                     },
                     child: Container(
@@ -544,7 +512,6 @@ class _SignUpPageState extends State<SignUpPageGoogle> {
               child: Image.asset("assets/images/upload_dl.png"),
             )),
         Text(basename(file!.path),
-
           style: TextStyle(
               fontSize: 13,
               fontFamily: 'OpenSans-Bold',
@@ -583,25 +550,49 @@ class _SignUpPageState extends State<SignUpPageGoogle> {
       ),
     );
   }
+  Future signUp2() async {
+    var apiURL = "https://nodeserver.mydevfactory.com:8087/distributor/signup";
+    final bytes = Io.File(image!.path).readAsBytesSync();
+    String base64Image = base64.encode(bytes);
+    print("JSON DATA : ${base64Image}");
+    http.Response response = await http.post(Uri.parse(apiURL),
+        headers: {"Content-Type": "application/json",'Accept': 'application/json',},
+        body: json.encode([
+          {
+            "full_name" : fullNameController.text,
+            "email": emailController.text.trim(),
+            "password": passwordController.text,
+            "confirm_password" : confirmPasswordController.text,
+            "phone_number" : phoneController.text,
+            "display_picture": base64Image
+          }
+        ]),
+        encoding: Encoding.getByName('utf-8'));
+
+    var data = jsonDecode(response.body);
+    print("Data: ${data}");
+    // Get.to(LoginScreen());
+  }
   Future uploadImageCheck(String fullName,email,password,confirmPassword,phoneNumber)async{
     var bytes = File(image!.path).readAsBytesSync();
     String base64Image = base64Encode(bytes);
     print('upload proccess started');
-    var apiPostData = {
-      "full_name": fullName,
+    var apiPostData = json.encode({
+      "full_name" : fullName,
       "email": email,
       "password": password,
       "confirm_password" : confirmPassword,
       "phone_number" : phoneNumber,
-      "display_picture" : base64Image
-    };
-  http.Response  response = await http.post(Uri.parse("https://nodeserver.mydevfactory.com:8087/distributor/signup"),body: jsonEncode(apiPostData));
-  if(response.statusCode == 200){
-    print('successfull');
-    print('JSON : ${response.body}');
-  }else{
-    print('fail');
-  }
+    });
+    http.Response  response = await http.post(Uri.parse("https://nodeserver.mydevfactory.com:8087/distributor/signup"),body: apiPostData);
+    if(response.statusCode == 200){
+      print('successfull');
+      print('JSON : ${response.body}');
+    }else{
+      print(base64Image);
+      print(response.body);
+      print('fail');
+    }
   }
 
   Future uploadDisplayPicture(fullName,email,password,confirmPassword,phoneNumber) async {

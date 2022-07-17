@@ -4,6 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
+import 'package:flyerapp/Screens/SharedPrefrence/sharedprefrence.dart';
 import 'package:get/get.dart';
 import '../../../Constants/colors.dart';
 import '../../Api/all_api.dart';
@@ -24,13 +25,14 @@ class HomePageMain extends StatefulWidget {
 class _HomePageMainState extends State<HomePageMain> {
   void initState(){
     getData();
+    getUserData();
     super.initState();
   }
   final FirebaseAuth firebaseAuth = FirebaseAuth.instance;
   String name = "";
   String email = "";
 
-
+  String? userNameAPI;
   Future<void> getData() async {
   User? user = firebaseAuth.currentUser;
   final DocumentSnapshot userData = await FirebaseFirestore.instance.collection('Users').doc(user?.uid).get();
@@ -39,7 +41,18 @@ class _HomePageMainState extends State<HomePageMain> {
     email = userData.get('email');
   });
   }
-
+  Future setUserData()async{
+    userNameAPI = await setName('');
+    setState((){
+      userNameAPI;
+    });
+  }
+  Future getUserData()async{
+    userNameAPI = await getName();
+   setState((){
+     userNameAPI;
+   });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -134,7 +147,7 @@ class _HomePageMainState extends State<HomePageMain> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Text(name,
+                    Text(userNameAPI!,
                       style: TextStyle(
                           fontSize: 20,
                           fontFamily: 'OpenSans-Bold',

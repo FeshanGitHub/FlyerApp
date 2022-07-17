@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:io' as Io;
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -10,6 +11,7 @@ import 'package:path/path.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../HomePage/homepage.dart';
 import '../LoginScreen/login_screen.dart';
+import '../SharedPrefrence/sharedprefrence.dart';
 import '../UserModel/user_model.dart';
 import 'package:http_parser/http_parser.dart';
 
@@ -29,21 +31,56 @@ class AllApi {
     Get.to(HomePage());
   }
 
-  Future signUp(String fullName,email,password,confirmPassword,phoneNumber) async {
+  Future signUp(String fullName,email,password,confirmPassword,phoneNumber,File displayPicture,File drivingLicense) async {
     var apiURL = "https://nodeserver.mydevfactory.com:8087/distributor/signup";
+    final bytes2 = Io.File(drivingLicense.path).readAsBytesSync();
+    String base64File = base64.encode(bytes2);
+    final bytes = Io.File(displayPicture.path).readAsBytesSync();
+    String base64Image = base64.encode(bytes);
     var mapData = json.encode({
       "full_name" : fullName,
       "email": email,
       "password": password,
       "confirm_password" : confirmPassword,
       "phone_number" : phoneNumber,
+      "display_picture" : "data:image/jpg;base64,$base64Image",
+      "driving_license" : "data:application/pdf;base64,$base64Image"
     });
     print("JSON DATA : ${mapData}");
-    http.Response response = await http.post(Uri.parse(apiURL), headers: {"Content-Type": "application/json"}, body: mapData);
+    http.Response response = await http.post(Uri.parse(apiURL),
+        headers: {"Content-Type": "application/json",'Accept': 'application/json',},
+        body: mapData);
 
     var data = jsonDecode(response.body);
     print("Data: ${data}");
-    Get.to(LoginScreen());
+    // Get.to(LoginScreen());
+  }
+  Future loginUser(email, password) async {
+    final response = await http.post(
+        Uri.parse("https://nodeserver.mydevfactory.com:8087/distributor/login"),
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: json.encode({
+          "email": email,
+          "password": password,
+        }),
+        encoding: Encoding.getByName('utf-8'));
+    try {
+      if (response.statusCode == 200) {
+        var data = jsonDecode(response.body);
+        // print(data["data"]);
+        setId(data["data"]["data"]["_id"]);
+        setName(data["data"]["data"]["full_name"]);
+        setToken(data["data"]["token"]);
+        Get.to(HomePage());
+      } else {
+        var data = jsonDecode(response.body);
+        print(data);
+      }
+    } catch (e) {
+      print(e.toString());
+    }
   }
   Future registration(String fullName,email,password,confirmPassword,phoneNumber,File displayPicture,File drivingLicense)async{
     var dio1 = dio.Dio();
