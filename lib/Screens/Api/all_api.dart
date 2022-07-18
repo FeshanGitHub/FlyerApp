@@ -7,29 +7,18 @@ import 'package:get/get.dart';
 import 'package:get/get_rx/src/rx_typedefs/rx_typedefs.dart';
 import 'package:http/http.dart' as http;
 import 'package:dio/dio.dart' as dio;
-import 'package:path/path.dart';
+import 'package:path/path.dart' as Path;
 import 'package:shared_preferences/shared_preferences.dart';
+import '../../Widgets/progress_indicator.dart';
 import '../HomePage/homepage.dart';
 import '../LoginScreen/login_screen.dart';
+import '../Registeration/registeration.dart';
 import '../SharedPrefrence/sharedprefrence.dart';
 import '../UserModel/user_model.dart';
 import 'package:http_parser/http_parser.dart';
 
 
 class AllApi {
-  Future signIn(email,password) async {
-    var apiURL = "https://nodeserver.mydevfactory.com:8087/distributor/login";
-    String mapData = json.encode({
-      "email": email,
-      "password": password
-    });
-    print("JSON DATA : ${mapData}");
-    http.Response response = await http.post(Uri.parse(apiURL),headers: {"Content-Type": "application/json"}, body: mapData);
-
-    var data = jsonDecode(response.body);
-    print("Data: ${data}");
-    Get.to(HomePage());
-  }
 
   Future signUp(String fullName,email,password,confirmPassword,phoneNumber,File displayPicture,File drivingLicense) async {
     var apiURL = "https://nodeserver.mydevfactory.com:8087/distributor/signup";
@@ -44,16 +33,26 @@ class AllApi {
       "confirm_password" : confirmPassword,
       "phone_number" : phoneNumber,
       "display_picture" : "data:image/jpg;base64,$base64Image",
-      "driving_license" : "data:application/pdf;base64,$base64Image"
+      "driving_license" : "data:application/pdf;base64,$base64File"
     });
     print("JSON DATA : ${mapData}");
     http.Response response = await http.post(Uri.parse(apiURL),
         headers: {"Content-Type": "application/json",'Accept': 'application/json',},
         body: mapData);
-
-    var data = jsonDecode(response.body);
-    print("Data: ${data}");
-    // Get.to(LoginScreen());
+   try{
+     if(response.statusCode == 200){
+       var data = jsonDecode(response.body);
+       Get.to(LoginScreen());
+       print("DataForResponse: ${data}");
+       print(response.statusCode);
+       Fluttertoast.showToast(msg: "A Verification Email Sent To Your Email Id!");
+     }else{
+       var data = jsonDecode(response.body);
+       print("Data: ${data}");
+     }
+   }catch(e){
+     print(e.toString());
+   }
   }
   Future loginUser(email, password) async {
     final response = await http.post(
@@ -69,10 +68,13 @@ class AllApi {
     try {
       if (response.statusCode == 200) {
         var data = jsonDecode(response.body);
-        // print(data["data"]);
+        print(data);
+        print('Data : ${data["data"]["data"]}');
         setId(data["data"]["data"]["_id"]);
         setName(data["data"]["data"]["full_name"]);
         setToken(data["data"]["token"]);
+        setEmail(data["data"]["data"]["email"]);
+        setDisplayPicture(data["data"]["data"]["display_picture"]);
         Get.to(HomePage());
       } else {
         var data = jsonDecode(response.body);
@@ -82,33 +84,21 @@ class AllApi {
       print(e.toString());
     }
   }
-  Future registration(String fullName,email,password,confirmPassword,phoneNumber,File displayPicture,File drivingLicense)async{
-    var dio1 = dio.Dio();
-    var displayPicture1 = await dio.MultipartFile.fromFile(displayPicture.path, filename: basename(displayPicture.path));
-    dio.FormData formData = dio.FormData.fromMap ({
-      "full_name" : fullName,
-      "email": email,
-      "password": password,
-      "confirm_password" : confirmPassword,
-      "phone_number" : phoneNumber,
-      'display_picture': displayPicture1,
-      'driving_license' : await dio.MultipartFile.fromFile(drivingLicense.path, filename: basename(drivingLicense.path))
-    }
+  showLoaderDialog(BuildContext context){
+    AlertDialog alert=AlertDialog(
+      content: new Row(
+        children: [
+          CircularProgressIndicator(),
+          Container(margin: EdgeInsets.only(left: 7),child:Text("Loading..." )),
+        ],),
     );
-    print('display :$displayPicture');
-    print(displayPicture1.runtimeType);
-    print(drivingLicense.path);
-    print(basename(drivingLicense.path));
-    print('Image :${displayPicture.path}');
-    print(basename(displayPicture.path));
-  dio.Response  response = await dio1.post("https://nodeserver.mydevfactory.com:8087/distributor/signup", data: formData,
-  );
-    var data = jsonDecode(response.data);
-  print('$data');
-  print('Response : ${response.statusCode}');
-
+    showDialog(barrierDismissible: false,
+      context:context,
+      builder:(BuildContext context){
+        return alert;
+      },
+    );
   }
-
 
 
   Future uploadDisplayPicture(fullName,email,password,confirmPassword,phoneNumber,File displayPicture) async {
@@ -139,7 +129,7 @@ class AllApi {
     }else{
       print('fail');
     }
-
+    
 
     // request.files.add(http.MultipartFile(
     //     'display_picture', displayPicture.readAsBytes().asStream(), displayPicture.lengthSync(),

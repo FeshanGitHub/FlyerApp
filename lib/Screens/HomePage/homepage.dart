@@ -22,6 +22,7 @@ import 'package:get/get.dart';
 import '../Job Details/job_details.dart';
 import 'package:http/http.dart' as http;
 
+import '../SharedPrefrence/sharedprefrence.dart';
 import '../UserModel/user_model.dart';
 import 'Help/help.dart';
 
@@ -35,10 +36,33 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   void initState(){
     getData();
+    getUserData();
     super.initState();
   }
+  String? userNameAPI;
+  String? userEmail;
+  String? displayPicture;
+  Future setUserData()async{
+    userNameAPI = await setName('');
+    userEmail = await setEmail('');
+    displayPicture = await setDisplayPicture('');
+    setState((){
+      userNameAPI;
+      userEmail;
+      displayPicture;
+    });
+  }
 
-
+  Future getUserData()async{
+    userNameAPI = await getName();
+    userEmail = await getEmail();
+    displayPicture = await getDisplayPicture();
+    setState((){
+      userNameAPI;
+      userEmail;
+      displayPicture;
+    });
+  }
   final FirebaseAuth firebaseAuth = FirebaseAuth.instance;
   String name = "";
   String email = "";
@@ -182,7 +206,7 @@ class _HomePageState extends State<HomePage> {
                                 shape: BoxShape.circle,
                                 image: DecorationImage(
                                   fit: BoxFit.cover,
-                                  image: userData == null ? NetworkImage(FirebaseAuth.instance.currentUser!.photoURL!) : NetworkImage(image)
+                                  image:  NetworkImage(displayPicture!)
                                 )
                               ),
                             ),
@@ -192,14 +216,14 @@ class _HomePageState extends State<HomePage> {
                         Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text(name,
+                            Text(userNameAPI!,
                               style: TextStyle(
                                 fontFamily: "Roboto-Medium",
                                 fontSize: 18,
                                 color: Colors.black
                               ),
                             ),
-                            Text(email,
+                            Text(userEmail!,
                               style: TextStyle(
                                   fontFamily: "Gothic-Regular",
                                   fontSize: 13,

@@ -43,7 +43,7 @@ class _RegistrationState extends State<Registration> {
   File? file;
   String? downloadUrl1;
   String? downloadUrl2;
-
+  bool isLoading = false;
 
   @override
   Widget build(BuildContext context) {
@@ -420,25 +420,25 @@ class _RegistrationState extends State<Registration> {
                   SizedBox(height: H*0.02,),
                   checkBox == true ? InkWell(
                     onTap: () async {
-                      // if(fullNameController.text.length < 3)
-                      // {
-                      //   displayToastMessage("Name must be atleast 3 characters", context);
-                      // }
-                      // else if(phoneController.text.length != 10 )
-                      // {
-                      //   displayToastMessage("Phone Number is not valid", context);
-                      // }else if(passwordController.text.length < 6)
-                      // {
-                      //   displayToastMessage("Password must be atleast 6 characters", context);
-                      // }else if(passwordController.text.length != confirmPasswordController.text.length)
-                      // {
-                      //   displayToastMessage("Password dose not match", context);
-                      // }
-                      // else if(file == null){
-                      //   displayToastMessage("Please Upload Your Driving License", context);
-                      // }
-                      // else{
-                        AllApi().signUp(
+                      if(fullNameController.text.length < 3)
+                      {
+                        displayToastMessage("Name must be atleast 3 characters", context);
+                      }
+                      else if(phoneController.text.length != 10 )
+                      {
+                        displayToastMessage("Phone Number is not valid", context);
+                      }else if(passwordController.text.length < 6)
+                      {
+                        displayToastMessage("Password must be atleast 6 characters", context);
+                      }else if(passwordController.text.length != confirmPasswordController.text.length)
+                      {
+                        displayToastMessage("Password dose not match", context);
+                      }
+                      else if(file == null){
+                        displayToastMessage("Please Upload Your Driving License", context);
+                      }
+                      else{
+                      signUp(
                               fullNameController.text.trim(),
                               emailController.text.trim(),
                               passwordController.text.trim(),
@@ -447,9 +447,7 @@ class _RegistrationState extends State<Registration> {
                               image!,
                               file!
                         );
-                        // registerUser(context);
-                        // uploadFile();
-                      // }
+                      }
                     },
                     child: Container(
                       width: W*0.8,
@@ -479,7 +477,7 @@ class _RegistrationState extends State<Registration> {
                         borderRadius: BorderRadius.all(Radius.circular(5)),
                         color: flyGray3
                     ),
-                    child: Center(child:
+                    child: isLoading ? CircularProgressIndicator(color: flyOrange2,) : Center(child:
                     Text("Next",
                       style: TextStyle(
                           fontFamily: "Opensans-Bold",
@@ -548,28 +546,45 @@ class _RegistrationState extends State<Registration> {
       ),
     );
   }
-  Future signUp2() async {
+  Future signUp(String fullName,email,password,confirmPassword,phoneNumber,File displayPicture,File drivingLicense) async {
     var apiURL = "https://nodeserver.mydevfactory.com:8087/distributor/signup";
-    final bytes = Io.File(image!.path).readAsBytesSync();
+    final bytes2 = Io.File(drivingLicense.path).readAsBytesSync();
+    String base64File = base64.encode(bytes2);
+    final bytes = Io.File(displayPicture.path).readAsBytesSync();
     String base64Image = base64.encode(bytes);
-    print("JSON DATA : ${base64Image}");
+    var mapData = json.encode({
+      "full_name" : fullName,
+      "email": email,
+      "password": password,
+      "confirm_password" : confirmPassword,
+      "phone_number" : phoneNumber,
+      "display_picture" : "data:image/jpg;base64,$base64Image",
+      "driving_license" : "data:application/pdf;base64,$base64File"
+    });
+    print("JSON DATA : ${mapData}");
     http.Response response = await http.post(Uri.parse(apiURL),
         headers: {"Content-Type": "application/json",'Accept': 'application/json',},
-        body: json.encode([
-          {
-            "full_name" : fullNameController.text,
-            "email": emailController.text.trim(),
-            "password": passwordController.text,
-            "confirm_password" : confirmPasswordController.text,
-            "phone_number" : phoneController.text,
-            "display_picture": base64Image
-          }
-        ]),
-        encoding: Encoding.getByName('utf-8'));
-
-    var data = jsonDecode(response.body);
-    print("Data: ${data}");
-    // Get.to(LoginScreen());
+        body: mapData);
+    setState((){
+      isLoading = true;
+    });
+    try{
+      if(response.statusCode == 200){
+        var data = jsonDecode(response.body);
+        Get.to(LoginScreen());
+        print("DataForResponse: ${data}");
+        print(response.statusCode);
+        Fluttertoast.showToast(msg: "A Verification Email Sent To Your Email Id!");
+        setState((){
+          isLoading = false;
+        });
+      }else{
+        var data = jsonDecode(response.body);
+        print("Data: ${data}");
+      }
+    }catch(e){
+      print(e.toString());
+    }
   }
   Future uploadImageCheck(String fullName,email,password,confirmPassword,phoneNumber)async{
     var bytes = File(image!.path).readAsBytesSync();
@@ -685,6 +700,7 @@ class _RegistrationState extends State<Registration> {
 
     }
   }
+
   Future registerUser(BuildContext context)async{
     showDialog(
         context: context,
@@ -774,6 +790,15 @@ class FirebaseApiForImage {
       return null;
     }
   }
+}
+showProgressBar(BuildContext context){
+  showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context){
+        return ProgressDialog(message: "Please wait...",);
+      }
+  );
 }
 displayToastMessage(String message,BuildContext context){
   Fluttertoast.showToast(msg: message);

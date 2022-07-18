@@ -33,6 +33,7 @@ class _HomePageMainState extends State<HomePageMain> {
   String email = "";
 
   String? userNameAPI;
+  String? userEmail;
   Future<void> getData() async {
   User? user = firebaseAuth.currentUser;
   final DocumentSnapshot userData = await FirebaseFirestore.instance.collection('Users').doc(user?.uid).get();
@@ -43,12 +44,16 @@ class _HomePageMainState extends State<HomePageMain> {
   }
   Future setUserData()async{
     userNameAPI = await setName('');
+    userEmail = await setEmail('');
     setState((){
       userNameAPI;
+      userEmail;
     });
   }
+
   Future getUserData()async{
     userNameAPI = await getName();
+    userEmail = await getEmail();
    setState((){
      userNameAPI;
    });
@@ -154,7 +159,7 @@ class _HomePageMainState extends State<HomePageMain> {
                           color: Colors.white
                       ),
                     ),
-                    Text('',
+                    Text(userEmail!,
                       style: TextStyle(
                           fontSize: 15,
                           fontFamily: 'OpenSans-Regular',

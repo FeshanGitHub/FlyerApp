@@ -29,3 +29,21 @@ Future<String?> getName() async {
   final prefs = await SharedPreferences.getInstance();
   return prefs.getString('name');
 }
+Future setEmail(String email) async {
+  final prefs = await SharedPreferences.getInstance();
+  await prefs.setString('email', email);
+}
+
+Future<String?> getEmail() async {
+  final prefs = await SharedPreferences.getInstance();
+  return prefs.getString('email');
+}
+Future setDisplayPicture(String displayPicture) async {
+  final prefs = await SharedPreferences.getInstance();
+  await prefs.setString('displayPicture', displayPicture);
+}
+
+Future<String?> getDisplayPicture() async {
+  final prefs = await SharedPreferences.getInstance();
+  return prefs.getString('displayPicture');
+}

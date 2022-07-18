@@ -211,8 +211,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         const CircularProgressIndicator(color: flyOrange2,);
                       });
                       print('clicked');
-                      await AllApi().signIn(email.text.trim(), password.text.trim());
-                      final SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
+                      await AllApi().loginUser(email.text.trim(), password.text.trim());
                       setState((){
                         loading == false;
                       });
