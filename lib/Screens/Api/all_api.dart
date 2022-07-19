@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io' as Io;
 import 'dart:io';
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
@@ -54,6 +55,7 @@ class AllApi {
      print(e.toString());
    }
   }
+
   Future loginUser(email, password) async {
     final response = await http.post(
         Uri.parse("https://nodeserver.mydevfactory.com:8087/distributor/login"),
@@ -75,6 +77,9 @@ class AllApi {
         setToken(data["data"]["token"]);
         setEmail(data["data"]["data"]["email"]);
         setDisplayPicture(data["data"]["data"]["display_picture"]);
+        setPhoneNumber(data["data"]["data"]["phone_number"]);
+        setPassword(data["data"]["data"]["password"]);
+        setPassword(data["data"]["data"]["driving_license"]);
         Get.to(HomePage());
       } else {
         var data = jsonDecode(response.body);
@@ -131,82 +136,37 @@ class AllApi {
     }
     
 
-    // request.files.add(http.MultipartFile(
-    //     'display_picture', displayPicture.readAsBytes().asStream(), displayPicture.lengthSync(),
-    //     filename: basename(displayPicture.path)));
-    // request.files.add(http.MultipartFile(
-    //     'driving_license', drivingLicense.readAsBytes().asStream(), drivingLicense.lengthSync(),
-    //     filename: basename(drivingLicense.path)));
-
-
-
-    // await request.send().then((response) async {
-    //
-    //   print('response = ${response}');
-    //
-    //   if (response.statusCode == 200) {
-    //     response.stream
-    //         .transform(utf8.decoder)
-    //         .listen((value) {})
-    //         .onData((data) {
-    //       value1 = data;
-    //       print('MyData : $data');
-    //     });
-    //     return value1;
-    //
-    //   } else {
-    //     value1 = "Error";
-    //     print('MyData : ${response.statusCode} }');
-    //
-    //     return value1;
-    //   }
-    // });
-    // return value1;
   }
-  // var request = http.MultipartRequest('POST', Uri.parse("https://nodeserver.mydevfactory.com:8087/distributor/signup"));
-  // request.files.add(http.MultipartFile(
-  // 'file', file.readAsBytes().asStream(), file.lengthSync(),
-  // filename: file.path));
-  // await request.send().then((response) async {
-  // if (response.statusCode == 200) {
-  // response.stream
-  //     .transform(utf8.decoder)
-  //     .listen((value) {})
-  //     .onData((data) {
-  // value1 = data;
-  // });
-  // return value1;
-  // } else {
-  // value1 = "Error";
-  // return value1;
-  // }
-  // });
-  // return value1;
-// signUp(email,password)async{
-// var url = Uri.parse('https://nodeserver.mydevfactory.com:8087/distributor/login');
-// http.Response response = await http.post(url,
-// body:jsonEncode(<String,String>{
-//   'email' : email,
-//   'password' : password
-// })
-// );
-// print('token = ${response.body} ${response.statusCode}');
-// if (response.statusCode == 200)
-// {
-//   var body =  jsonDecode(response.body);
-//   print('body =$body');
-//   Get.snackbar('TOKEN', body['token']);
-// }
-// }
+  Future updateProfile(displayPicture) async {
+    var token =
+        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYyZDAwNmVhOWNkMDRlNjI4YzY1ZTAxZiIsImlhdCI6MTY1ODEyMDkwMiwiZXhwIjoxNjY4NDg4OTAyfQ.Psr3BtgjY5cHd_frdj_I7mQ3wpBqw8i1OkrXvC_QKkw";
 
-// Future<Data1> fetchAlbum()async{
-//   final response = await http.get(Uri.parse("https://nodeserver.mydevfactory.com:8087/distributor/login"));
-//   if(response.statusCode == 200)
-//   {
-//     return Data1.fromJson(jsonDecode(response.body));
-//   } else
-//   {
-//     throw Exception('Failed to login');
-//   }
-// }
+    dio.FormData formData = dio.FormData.fromMap({
+      "phone_number": 9872543210,
+       "driving_license": "",
+      "full_name": "Sarkar",
+       "display_picture": await dio.MultipartFile.fromFile(displayPicture,
+           filename: DateTime.now().microsecond.toString())
+    });
+    var dio1 = Dio(
+      BaseOptions(
+        headers: {
+          'Content-Type': 'application/json; charset=utf-8',
+          'x-access-token': token,
+        },
+      ),
+    );
+
+    var response = await dio1.put(
+      'https://nodeserver.mydevfactory.com:8087/distributor/profile',
+      data: formData,
+    );
+    if (response.statusCode == 200) {
+      var data = response.data;
+      print(data);
+    } else {
+      var data = response.data;
+      print(data);
+    }
+  }
 }

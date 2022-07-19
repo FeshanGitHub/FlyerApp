@@ -1,9 +1,15 @@
+import 'dart:io';
+import 'package:flyerapp/Screens/Profile/pdf_viewer.dart';
+import 'package:path/path.dart' as Path;
+import 'package:http/http.dart' as http;
 import 'package:circular_bottom_navigation/tab_item.dart';
 import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/material.dart';
 import 'package:flyerapp/Screens/Forgot%20password/change_password.dart';
 import 'package:flyerapp/Screens/HomePage/Deliveries/deliveries.dart';
 import 'package:flyerapp/Screens/HomePage/Shipments/shipments.dart';
+import 'package:flyerapp/Screens/Profile/edit_profile.dart';
+import 'package:path_provider/path_provider.dart';
 import '../../Constants/colors.dart';
 import 'package:circular_bottom_navigation/circular_bottom_navigation.dart';
 import 'package:get/get.dart';
@@ -11,6 +17,7 @@ import '../HomePage/Invite Friends/invite_friends.dart';
 import '../HomePage/PreferedLocation/prefered_loca_edit.dart';
 import '../LoginScreen/login_screen.dart';
 import '../Payment/payment.dart';
+import '../SharedPrefrence/sharedprefrence.dart';
 
 class Profile extends StatefulWidget {
   const Profile({Key? key,}) : super(key: key);
@@ -20,6 +27,57 @@ class Profile extends StatefulWidget {
 }
 
 class _ProfileState extends State<Profile> {
+  @override
+  void initState(){
+    getUserData();
+    super.initState();
+  }
+  String? urlPdfPath;
+  String? userNameAPI;
+  String? userEmail;
+  String? displayPicture;
+  String? drivingLicense;
+  String? phoneNumber;
+  Future setUserData()async{
+    userNameAPI = await setName('');
+    userEmail = await setEmail('');
+    displayPicture = await setDisplayPicture('');
+    drivingLicense = await setDrivingLicense('');
+    phoneNumber = await setPhoneNumber('');
+    setState((){
+      userNameAPI;
+      userEmail;
+      displayPicture;
+      drivingLicense;
+      phoneNumber;
+    });
+  }
+  Future<File> getFileFromUrl(String url)async{
+    final response = await http.get(Uri.parse(url));
+    final bytes = response.bodyBytes;
+    return storeFile(url,bytes);
+  }
+  Future<File> storeFile(String url,List<int>bytes) async {
+  final fileName = Path.basename(url);
+  final dir =  await getApplicationDocumentsDirectory();
+  final file = File("${dir.path}/$fileName");
+  await file.writeAsBytes(bytes,flush: true);
+  return file;
+  }
+  Future getUserData()async{
+    userNameAPI = await getName();
+    userEmail = await getEmail();
+    displayPicture = await getDisplayPicture();
+    drivingLicense = await getDrivingLicense();
+    phoneNumber = await getPhoneNumber();
+    setState((){
+      userNameAPI;
+      userEmail;
+      displayPicture;
+      drivingLicense;
+      phoneNumber;
+    });
+  }
   @override
   Widget build(BuildContext context) {
     var H = MediaQuery.of(context).size.height;
@@ -96,7 +154,7 @@ class _ProfileState extends State<Profile> {
                                       ,child: Column(
                                       crossAxisAlignment: CrossAxisAlignment.start,
                                       children: [
-                                        Text(":  Griffin Rox",
+                                        Text(":  $userNameAPI",
                                             style: TextStyle(
                                                 fontSize: 15,
                                                 fontFamily: "Opensans-Regular",
@@ -104,7 +162,7 @@ class _ProfileState extends State<Profile> {
                                             )
                                         ),
                                         SizedBox(height: H*0.02,),
-                                        Text(":  griffin@dummy.com",
+                                        Text(":  $userEmail",
                                             style: TextStyle(
                                                 fontSize: 15,
                                                 fontFamily: "Opensans-Regular",
@@ -112,7 +170,7 @@ class _ProfileState extends State<Profile> {
                                             )
                                         ),
                                         SizedBox(height: H*0.02,),
-                                        Text(":  +1 654 789 3210",
+                                        Text(":  $phoneNumber",
                                             style: TextStyle(
                                                 fontSize: 15,
                                                 fontFamily: "Opensans-Regular",
@@ -156,34 +214,42 @@ class _ProfileState extends State<Profile> {
                                 SizedBox(
                                     height: H*0.02
                                 ),
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
+                                Center(
+                                  child: Column(
                                   children: [
-                                    DottedBorder(
-                                      strokeWidth: 2,
-                                      borderType: BorderType.RRect,
-                                      radius: Radius.circular(8),
-                                      dashPattern: [7,7],
-                                      color: flyGray3,
+                                    Text("$userNameAPI's Driving license",
+                                  style: TextStyle(
+                                      color: flyBlack2,
+                                      fontFamily: "Opensans-Bold",
+                                      fontSize: 16
+                                  ),
+                                ),
+                                    SizedBox(height: H*0.02,),
+                                    InkWell(
+                                      onTap: ()async{
+                                        final urlDrivingLicense = "$drivingLicense";
+                                        final file = await getFileFromUrl(urlDrivingLicense);
+                                        openPDF(file);
+                                      print(drivingLicense);
+                                      },
                                       child: Container(
-                                        height: H*0.12,
-                                        width: W*0.25,
+                                        padding: EdgeInsets.all(6),
                                         decoration: BoxDecoration(
-                                            color: Color(0xFFF3F3F3),
-                                            borderRadius: BorderRadius.all(Radius.circular(4))
+                                          borderRadius: BorderRadius.all(Radius.circular(10)),
+                                          color: flyOrange2
                                         ),
-                                        child: Row(
-                                          mainAxisAlignment: MainAxisAlignment.center,
-                                          children: [
-                                            Container(
-                                                height: H*0.04,
-                                                child: Image.asset("assets/images/add.png")),
-                                          ],
+                                        child: Text("View PDF",
+                                          style: TextStyle(
+                                              color: Colors.white,
+                                              fontFamily: "Opensans-Bold",
+                                              fontSize: 16
+                                          ),
                                         ),
                                       ),
                                     )
-                                  ],
-                                ),
+                              ],
+                            ),
+                          )
                               ],
                             ),
                           ),
@@ -212,8 +278,10 @@ class _ProfileState extends State<Profile> {
                                   ,child: Container(
                                   height: H*0.12,
                                   decoration: BoxDecoration(
+                                    shape: BoxShape.circle,
                                       image: DecorationImage(
-                                        image: AssetImage("assets/images/registeration_prof_pic.png"),
+                                        fit: BoxFit.cover,
+                                        image: NetworkImage("$displayPicture"),
                                       )
                                   ),
                                 ),
@@ -256,7 +324,9 @@ class _ProfileState extends State<Profile> {
               Align(
                 alignment: Alignment.center,
                 child: InkWell(
-                  onTap: (){},
+                  onTap: (){
+                    Get.to(EditProfile());
+                  },
                   child: Container(
                     width: W*0.85,
                     height: H*0.08,
@@ -401,4 +471,6 @@ class _ProfileState extends State<Profile> {
       ),
     );
   }
+
+  void openPDF(File file) => Get.to(PDFViewerPage(file: file,));
 }

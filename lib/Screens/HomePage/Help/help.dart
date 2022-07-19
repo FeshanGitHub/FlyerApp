@@ -31,7 +31,6 @@ class _HelpState extends State<Help> {
     socket!.connect();
     socket!.onConnect((data) {
       print("Connected");
-
       socket!.on('message', (data) {
         print("listen");
         print(data);
@@ -249,10 +248,12 @@ class _HelpState extends State<Help> {
                                     "username": name
                                   });
                                   print("send");
-                                  chatController.messageslist.add(ChatMessage(
-                                      messageContent: textController.text,
-                                      messageType: name!));
-                                  textController.clear();
+                                 setState((){
+                                   chatController.messageslist.add(ChatMessage(
+                                       messageContent: textController.text,
+                                       messageType: name!));
+                                   textController.clear();
+                                 });
                                 },
                                 child: CircleAvatar(
                                     radius: 21,

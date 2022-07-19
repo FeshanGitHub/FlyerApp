@@ -152,14 +152,14 @@ class _HomePageMainState extends State<HomePageMain> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Text(userNameAPI!,
+                    Text("$userNameAPI",
                       style: TextStyle(
                           fontSize: 20,
                           fontFamily: 'OpenSans-Bold',
                           color: Colors.white
                       ),
                     ),
-                    Text(userEmail!,
+                    Text("$userEmail",
                       style: TextStyle(
                           fontSize: 15,
                           fontFamily: 'OpenSans-Regular',

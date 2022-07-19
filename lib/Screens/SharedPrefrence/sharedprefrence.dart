@@ -47,3 +47,34 @@ Future<String?> getDisplayPicture() async {
   final prefs = await SharedPreferences.getInstance();
   return prefs.getString('displayPicture');
 }
+Future setDrivingLicense(String drivingLicense) async {
+  final prefs = await SharedPreferences.getInstance();
+  await prefs.setString('drivingLicense', drivingLicense);
+}
+
+Future<String?> getDrivingLicense() async {
+  final prefs = await SharedPreferences.getInstance();
+  return prefs.getString('drivingLicense');
+}
+Future removeDrivingLicense() async {
+  final prefs = await SharedPreferences.getInstance();
+  return prefs.remove('drivingLicense');
+}
+Future setPhoneNumber(String phoneNumber) async {
+  final prefs = await SharedPreferences.getInstance();
+  await prefs.setString('phoneNumber', phoneNumber);
+}
+
+Future getPhoneNumber() async {
+  final prefs = await SharedPreferences.getInstance();
+  return prefs.getString('phoneNumber');
+}
+Future setPassword(String password) async {
+  final prefs = await SharedPreferences.getInstance();
+  await prefs.setString('password', password);
+}
+
+Future getPassword() async {
+  final prefs = await SharedPreferences.getInstance();
+  return prefs.getString('setPassword');
+}

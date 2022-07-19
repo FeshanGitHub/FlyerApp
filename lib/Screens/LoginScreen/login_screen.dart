@@ -267,7 +267,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         setState(() {
 
                         });
-                        //GoogleSignIn().signOut();
+                        GoogleSignIn().signOut();
                       },
                       child: CircleAvatar(
                         radius: 31,
