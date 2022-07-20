@@ -111,7 +111,7 @@ class _EditProfileState extends State<EditProfile> {
                 SizedBox(
                   height: H*0.1,
                 ),
-                Text("Create New Account",
+                Text("Edit Your Profile",
                   style: TextStyle(
                       fontFamily: 'OpenSans-Bold',
                       fontSize: 22,
@@ -119,34 +119,7 @@ class _EditProfileState extends State<EditProfile> {
                   ),
                 ),
                 SizedBox(
-                  height: H*0.01,
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text("If you are already registered.",
-                      style: TextStyle(
-                          fontFamily: 'OpenSans-Light',
-                          fontSize: 18,
-                          color: flyGray1
-                      ),
-                    ),
-                    InkWell(
-                      onTap: (){
-                        Get.to(LoginScreen());
-                      },
-                      child: Text(" Sign In",
-                        style: TextStyle(
-                            fontFamily: 'OpenSans-Medium',
-                            fontSize: 18,
-                            color: flyBlue2
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-                SizedBox(
-                  height: H*0.03,
+                  height: H*0.02,
                 ),
                 InkWell(
                   onTap: (){
@@ -323,122 +296,35 @@ class _EditProfileState extends State<EditProfile> {
                 SizedBox(
                   height: H*0.04,
                 ),
-                Container(
-                  height: H*0.14,
-                  width: W*0.85,
-                  decoration: BoxDecoration(
-                      boxShadow: [BoxShadow(
-                          offset: Offset(0,2),
-                          color: flyGray4
-                      )],
-                      color: flyWhite,
-                      borderRadius: BorderRadius.all(Radius.circular(8)),
-                      border: Border.all(color: flyGray4,)
-                  ),
-                  child: InkWell(
-                    onTap: (){
-                      selectFile();
-                    },
-                    child: Center(
-                      child: file == null ? buildDottedBorderRegister(H, W) : buildUploadNoDotted(H),
-                    ),
-                  ),
-                ),
-                SizedBox(height: H*0.02,),
-                Padding(
-                  padding:  EdgeInsets.only(left: W*0.04),
-                  child: Row(
-                    children: [
-                      Checkbox(value: checkBox,
-                          checkColor: Colors.white,
-                          activeColor: flyOrange2,
-                          onChanged: (value)
-                          {
-                            setState((){
-                              checkBox = value!;
-                            });
-                          })
-                      ,Text("I Agree To",
-                        style: TextStyle(
-                            fontFamily: 'OpenSans-Light',
-                            shadows: [Shadow(
-                                color: flyGray3
-                                ,offset: Offset(1.2,1.2)
-                            )],
-                            fontSize: 13,
-                            color: flyBlack
-                        ),
-                      ),
-                      Text(" Terms & Conditions.",
-                        style: TextStyle(
-                            fontFamily: 'OpenSans-Medium',
-                            shadows: [Shadow(
-                                color: flyGray3
-                                ,offset: Offset(1.5,1.5)
-                            )],
-                            fontSize: 13,
-                            fontWeight: FontWeight.bold,
-                            color: flyBlack
-                        ),
-                      ),
-
-                    ],
-                  ),
-                ),
-                SizedBox(height: H*0.02,),
-                checkBox == true ? InkWell(
-                  onTap: () async {
-                    if(fullNameController.text.length < 3)
-                    {
-                      displayToastMessage("Name must be atleast 3 characters", context);
-                    }
-                    else if(phoneController.text.length != 10 )
-                    {
-                      displayToastMessage("Phone Number is not valid", context);
-                    }else if(passwordController.text.length < 6)
-                    {
-                      displayToastMessage("Password must be atleast 6 characters", context);
-                    }else if(passwordController.text.length != confirmPasswordController.text.length)
-                    {
-                      displayToastMessage("Password dose not match", context);
-                    }
-                    else if(file == null){
-                      displayToastMessage("Please Upload Your Driving License", context);
-                    }
-                    else{
-
-                    }
+                InkWell(
+                  onTap: (){
+                    selectFile();
                   },
                   child: Container(
-                    width: W*0.8,
-                    height: H*0.08,
+                    padding: EdgeInsets.all(12),
                     decoration: BoxDecoration(
-                        borderRadius: BorderRadius.all(Radius.circular(5)),
-                        gradient: LinearGradient(
-                            colors: [flyOrange1,flyOrange2],
-                            begin: Alignment.bottomLeft,
-                            end:  Alignment.topRight
-                        )
+                        borderRadius: BorderRadius.all(Radius.circular(10)),
+                        color: flyGray5
                     ),
-                    child: Center(child:
-                    Text("Next",
+                    child: Text(file == null ? "Upload New Driving License" : basename(file!.path),
                       style: TextStyle(
+                          color: flyBlack,
                           fontFamily: "Opensans-Bold",
                           fontSize: 16,
-                          color: Colors.white
                       ),
                     )
-                    ),
                   ),
-                ) : Container(
+                ),
+                SizedBox(height: H*0.04,),
+                 Container(
                   width: W*0.8,
                   height: H*0.08,
                   decoration: BoxDecoration(
                       borderRadius: BorderRadius.all(Radius.circular(5)),
-                      color: flyGray3
+                      color: flyOrange2
                   ),
-                  child: isLoading ? CircularProgressIndicator(color: flyOrange2,) : Center(child:
-                  Text("Next",
+                  child: Center(child:
+                  Text("Update",
                     style: TextStyle(
                         fontFamily: "Opensans-Bold",
                         fontSize: 16,

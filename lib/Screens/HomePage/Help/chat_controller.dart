@@ -10,7 +10,7 @@ class ChatController extends GetxController {
       ChatMessage(
           messageContent:
               "Hi there! you can begin by asking your question below...",
-          messageType: "admin123"),
+          messageType: "admin"),
     );
   }
 }

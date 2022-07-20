@@ -155,7 +155,7 @@ class _HelpState extends State<Help> {
                         child: Align(
                           alignment:
                               (chatController.messageslist[index].messageType ==
-                                      "admin123"
+                                      "admin"
                                   ? Alignment.topLeft
                                   : Alignment.topRight),
                           child: Container(
@@ -163,7 +163,7 @@ class _HelpState extends State<Help> {
                               borderRadius: BorderRadius.circular(10),
                               color: (chatController
                                           .messageslist[index].messageType ==
-                                      "admin123"
+                                      "admin"
                                   ? Color.fromARGB(255, 197, 197, 197)
                                   : flyOrange1),
                             ),
@@ -175,7 +175,7 @@ class _HelpState extends State<Help> {
                                   fontFamily: "OpenSans-Regular",
                                   color: chatController.messageslist[index]
                                               .messageType ==
-                                          "admin123"
+                                          "admin"
                                       ? Color(0xff4b4b4b)
                                       : Colors.white,
                                   fontWeight: FontWeight.w500),
@@ -248,12 +248,10 @@ class _HelpState extends State<Help> {
                                     "username": name
                                   });
                                   print("send");
-                                 setState((){
                                    chatController.messageslist.add(ChatMessage(
                                        messageContent: textController.text,
                                        messageType: name!));
                                    textController.clear();
-                                 });
                                 },
                                 child: CircleAvatar(
                                     radius: 21,
