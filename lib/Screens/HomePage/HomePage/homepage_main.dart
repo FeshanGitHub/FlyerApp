@@ -1,16 +1,18 @@
 import 'dart:convert';
-
+import 'package:socket_io_client/socket_io_client.dart' as IO;
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:flyerapp/Screens/SharedPrefrence/sharedprefrence.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
 import '../../../Constants/colors.dart';
 import '../../Api/all_api.dart';
 import '../../Job Details/job_details.dart';
 import 'package:http/http.dart' as http;
-
+import 'package:intl/intl.dart';
+import '../../UserModel/job_model.dart';
 import '../../UserModel/user_model.dart';
 
 
@@ -23,24 +25,80 @@ class HomePageMain extends StatefulWidget {
 }
 
 class _HomePageMainState extends State<HomePageMain> {
+  late Future<JobModel> futureAlbum;
   void initState(){
-    getData();
+    connect();
     getUserData();
+    getJobData();
     super.initState();
   }
   final FirebaseAuth firebaseAuth = FirebaseAuth.instance;
   String name = "";
   String email = "";
-
+  IO.Socket? socket;
   String? userNameAPI;
   String? userEmail;
-  Future<void> getData() async {
-  User? user = firebaseAuth.currentUser;
-  final DocumentSnapshot userData = await FirebaseFirestore.instance.collection('Users').doc(user?.uid).get();
-  setState((){
-    name = userData.get('full_name');
-    email = userData.get('email');
-  });
+  double? lat;
+  double? long;
+  List<dynamic> _jobs = [];
+  bool _loading = false;
+  Future<List<Datum>> getJobData()async{
+    setState((){
+      _loading = true;
+    });
+    var url = "https://nodeserver.mydevfactory.com:8087/distributor/preferredJobs";
+    var response = await http.get(Uri.parse(url,),
+      headers: {
+    'x-access-token': "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYyZDhmNmEwOTQ4MzhiNjc5MDZiN2VmOCIsImlhdCI6MTY1ODQ3MTc2NiwiZXhwIjoxNjY4ODM5NzY2fQ.3tWNWqu9CQCAFMAlFJHsVQhAaMllwUugDY7xLaR7R-I",
+    },);
+    // JobModel jobModel = JobModel.fromJson(jsonDecode(response.body) as Map<String, dynamic>);
+    // print(jobModel.jobTitle);
+    var jsonData = jsonDecode(response.body);
+    setState((){
+      _jobs = jsonData['data'];
+      print(_jobs[0]['jobTitle']);
+      _loading = false;
+    });
+    print(jsonData);
+    return jsonData;
+  }
+  var userName;
+  void connect() async {
+    userName = await getName();
+    socket = IO.io(
+      "https://nodeserver.mydevfactory.com:8087",
+      {
+        'transports': ['websocket'],
+        'autoConnect': false,
+      },
+    );
+    socket!.connect();
+    try {
+      socket!.onConnect((data) {
+        print("Connected");
+
+      });
+    } catch (e) {
+      print(e.toString());
+    }
+    socket!.onDisconnect((data) => print("DisConnected"));
+    print(socket!.connected);
+  }
+  Position? currentPosition;
+  Future locatePosition()async
+  {
+    Position position = await Geolocator.getCurrentPosition(
+        desiredAccuracy: LocationAccuracy.high);
+    currentPosition = position;
+    lat = position.latitude;
+    print(lat);
+    long = position.longitude;
+    print(long);
+    var location = ({
+      "lat": lat,
+      "lng": long,
+    });
+    socket!.emit('liveLocationUpdate', {location});
   }
   Future setUserData()async{
     userNameAPI = await setName('');
@@ -61,6 +119,8 @@ class _HomePageMainState extends State<HomePageMain> {
 
   @override
   Widget build(BuildContext context) {
+
+    final DateFormat formatter = DateFormat('yyyy-MM-dd');
     var H = MediaQuery.of(context).size.height;
     var W = MediaQuery.of(context).size.width;
     return SafeArea(
@@ -132,47 +192,52 @@ class _HomePageMainState extends State<HomePageMain> {
             ],
           ),
           SizedBox(height: H*0.02,),
-          Center(
-            child: Container(
-              decoration: BoxDecoration(
-                  color: Colors.red,
-                  borderRadius: BorderRadius.all(Radius.circular(12)),
-                  image: DecorationImage(
-                      image: AssetImage(
-                          "assets/images/hello_homescreen.png"
+          InkWell(
+            onTap: (){
+              locatePosition();
+            },
+            child: Center(
+              child: Container(
+                decoration: BoxDecoration(
+                    color: Colors.red,
+                    borderRadius: BorderRadius.all(Radius.circular(12)),
+                    image: DecorationImage(
+                        image: AssetImage(
+                            "assets/images/hello_homescreen.png"
+                        ),
+                        fit: BoxFit.fill
+                    )
+                ),
+                height: H*0.2,
+                width: W*0.9,
+                child: Padding(
+                  padding:  EdgeInsets.only(left: W*0.05),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text("$userNameAPI",
+                        style: TextStyle(
+                            fontSize: 20,
+                            fontFamily: 'OpenSans-Bold',
+                            color: Colors.white
+                        ),
                       ),
-                      fit: BoxFit.fill
-                  )
-              ),
-              height: H*0.2,
-              width: W*0.9,
-              child: Padding(
-                padding:  EdgeInsets.only(left: W*0.05),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text("$userNameAPI",
-                      style: TextStyle(
-                          fontSize: 20,
-                          fontFamily: 'OpenSans-Bold',
-                          color: Colors.white
+                      Text("$userEmail",
+                        style: TextStyle(
+                            fontSize: 15,
+                            fontFamily: 'OpenSans-Regular',
+                            color: Colors.white
+                        ),
                       ),
-                    ),
-                    Text("$userEmail",
-                      style: TextStyle(
-                          fontSize: 15,
-                          fontFamily: 'OpenSans-Regular',
-                          color: Colors.white
-                      ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
               ),
             ),
           ),
           SizedBox(height: H*0.03,),
-          Text("     Recent job list",
+          Text("     Prefered job list",
             style: TextStyle(
                 fontSize: 15,
                 fontFamily: 'OpenSans-Bold',
@@ -180,22 +245,93 @@ class _HomePageMainState extends State<HomePageMain> {
             ),
           ),
           SizedBox(height: H*0.02,),
-          ListView.builder(
+          _jobs.isNotEmpty ? ListView.builder(
+              itemCount: _jobs.length,
               physics: NeverScrollableScrollPhysics(),
               shrinkWrap: true,
-              itemCount: 6,
               itemBuilder: (context ,index){
+                var date = _jobs[0]['createdAt'];
                 return Column(
                   children: [
                     InkWell(
                         onTap: (){
                           Get.to(JobDetails());
                         },
-                        child: buildCardFlyer(H, W)),
+                        child: Container(
+                          height: H*0.15,
+                          width: W*0.9,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.all(Radius.circular(8)),
+                            color: Colors.white,
+                          ),
+                          child: Row(
+                            children: [
+                              _loading ?CircularProgressIndicator(color: flyOrange2,)  : Container(
+                                  color: Colors.red,
+                                  width: W*0.3,
+                                  height: H*0.15,
+                                  child: Image.network(_jobs[0]['bannerImage'],fit: BoxFit.cover,)),
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                children: [
+                                  SizedBox(height: H*0.03,),
+                                  Text(" ${_jobs[0]['jobTitle']}",
+                                    style: TextStyle(
+                                        fontSize: 15,
+                                        fontFamily: 'OpenSans-Bold',
+                                        color: Color(0xFF333333)
+                                    ),
+                                  ),
+                                  SizedBox(height: H*0.01,),
+                                  Row(
+                                    children: [
+                                      Text("  Location :",
+                                        style: TextStyle(
+                                            fontSize: 12,
+                                            fontFamily: 'OpenSans-Regular',
+                                            color: Color(0xFF808080)
+                                        ),
+                                      ),
+                                      Text(_jobs[0]['startLocation']['address'],
+                                        overflow: TextOverflow.ellipsis,
+                                        style: TextStyle(
+                                            fontSize: 12,
+                                            fontFamily: 'OpenSans-Regular',
+                                            color: Color(0xFF333333)
+                                        ),
+                                      ),
+
+                                    ],
+                                  ),
+                                  Row(
+                                    children: [
+                                      Text("  Date :",
+                                        style: TextStyle(
+                                            fontSize: 12,
+                                            fontFamily: 'OpenSans-Regular',
+                                            color: Color(0xFF808080)
+                                        ),
+                                      ),
+                                      Text(formatter.parse(date).toString(),
+                                        overflow: TextOverflow.ellipsis,
+                                        style: TextStyle(
+                                            fontSize: 12,
+                                            fontFamily: 'OpenSans-Regular',
+                                            color: Color(0xFF333333)
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
+                        )),
                     SizedBox(height: H*0.015,)
                   ],
                 );
-              })
+              }) : Center(child: CircularProgressIndicator(color: flyOrange2,))
         ],
       ),
     ),
@@ -247,25 +383,6 @@ class _HomePageMainState extends State<HomePageMain> {
               ),
               Row(
                 children: [
-                  Text("  Pincode :",
-                    style: TextStyle(
-                        fontSize: 12,
-                        fontFamily: 'OpenSans-Regular',
-                        color: Color(0xFF808080)
-                    ),
-                  ),
-                  Text(" 700091 ",
-                    overflow: TextOverflow.ellipsis,
-                    style: TextStyle(
-                        fontSize: 12,
-                        fontFamily: 'OpenSans-Regular',
-                        color: Color(0xFF333333)
-                    ),
-                  ),
-                ],
-              ),
-              Row(
-                children: [
                   Text("  Date :",
                     style: TextStyle(
                         fontSize: 12,
@@ -299,4 +416,8 @@ class _HomePageMainState extends State<HomePageMain> {
       });
     }
   }
+}
+class Job {
+  final String name;
+  Job({required this.name});
 }

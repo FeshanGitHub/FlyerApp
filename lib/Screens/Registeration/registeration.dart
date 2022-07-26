@@ -550,8 +550,10 @@ class _RegistrationState extends State<Registration> {
     var apiURL = "https://nodeserver.mydevfactory.com:8087/distributor/signup";
     final bytes2 = Io.File(drivingLicense.path).readAsBytesSync();
     String base64File = base64.encode(bytes2);
+    print("File: $base64File");
     final bytes = Io.File(displayPicture.path).readAsBytesSync();
     String base64Image = base64.encode(bytes);
+    print("Image: $base64Image");
     var mapData = json.encode({
       "full_name" : fullName,
       "email": email,

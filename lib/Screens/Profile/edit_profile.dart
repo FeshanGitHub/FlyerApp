@@ -49,28 +49,28 @@ class _EditProfileState extends State<EditProfile> {
   String? userNameAPI;
   String? userEmail;
   String? displayPicture;
-  String? drivingLicense;
+  String? drivingLicenseFromAPi;
   String? phoneNumber;
   String? password;
   String? tokenFromAPI;
   @override
   void initState(){
-    getUserData();
     super.initState();
+    getUserData();
   }
   Future setUserData()async{
     tokenFromAPI = await setToken('');
     userNameAPI = await setName('');
     userEmail = await setEmail('');
     displayPicture = await setDisplayPicture('');
-    drivingLicense = await setDrivingLicense('');
+    drivingLicenseFromAPi = await setDrivingLicense('');
     phoneNumber = await setPhoneNumber('');
     password = await setPassword('');
     setState((){
       userNameAPI;
       userEmail;
       displayPicture;
-      drivingLicense;
+      drivingLicenseFromAPi;
       phoneNumber;
       password;
       tokenFromAPI;
@@ -81,15 +81,16 @@ class _EditProfileState extends State<EditProfile> {
     userNameAPI = await getName();
     userEmail = await getEmail();
     displayPicture = await getDisplayPicture();
-    drivingLicense = await getDrivingLicense();
+    drivingLicenseFromAPi = await getDrivingLicense();
     phoneNumber = await getPhoneNumber();
     password = await getPassword();
     tokenFromAPI = await getToken();
+    print("MyToken : $tokenFromAPI");
     setState((){
       userNameAPI;
       userEmail;
       displayPicture;
-      drivingLicense;
+      drivingLicenseFromAPi;
       phoneNumber;
       password;
       tokenFromAPI;
@@ -213,7 +214,7 @@ class _EditProfileState extends State<EditProfile> {
                     ),
                     child: Center(
                       child: TextFormField(
-                        controller: fullNameController..text = "$userNameAPI",
+                        controller: fullNameController,
                         decoration: InputDecoration(
                             filled: true,
                             fillColor: Colors.white,
@@ -243,7 +244,8 @@ class _EditProfileState extends State<EditProfile> {
                     ),
                     child: Center(
                       child: TextFormField(
-                        controller: phoneController..text = "$phoneNumber",
+                        // controller: phoneController..text = "$phoneNumber",
+                        controller: phoneController,
                         keyboardType: TextInputType.number,
                         decoration: InputDecoration(
                             filled: true,
@@ -266,38 +268,19 @@ class _EditProfileState extends State<EditProfile> {
                 SizedBox(
                   height: H*0.04,
                 ),
-                Container(
-                    width: W*0.85,
-                    height: H*0.08,
-                    decoration: BoxDecoration(
-                        border: Border.all(color: Colors.transparent,width: 0.5)
-                    ),
-                    child: Center(
-                      child: TextFormField(
-                        controller: emailController..text = "$userEmail",
-                        decoration: InputDecoration(
-                            filled: true,
-                            fillColor: Colors.white,
-                            label: Text("Email"),
-                            labelStyle: TextStyle(
-                                fontSize: 15,
-                                fontFamily: 'OpenSans-Regular',
-                                color: flyGray3
-                            ),
-                            focusedBorder: OutlineInputBorder(
-                                borderSide: BorderSide(color: Colors.black)
-                            ),
-                            enabledBorder: OutlineInputBorder(
-                                borderSide: BorderSide(color: flyGray4)
-                            )
-                        ),
-                      ),
-                    )),
+                Text(file == null ? "$userNameAPI's Driving license" : basename(file!.path),
+                  style: TextStyle(
+                      color: flyBlack2,
+                      fontFamily: "Opensans-Bold",
+                      fontSize: 16
+                  ),
+                ),
                 SizedBox(
-                  height: H*0.04,
+                  height: H*0.02,
                 ),
                 InkWell(
                   onTap: (){
+
                     selectFile();
                   },
                   child: Container(
@@ -306,7 +289,7 @@ class _EditProfileState extends State<EditProfile> {
                         borderRadius: BorderRadius.all(Radius.circular(10)),
                         color: flyGray5
                     ),
-                    child: Text(file == null ? "Upload New Driving License" : basename(file!.path),
+                    child: Text("Upload New Driving License",
                       style: TextStyle(
                           color: flyBlack,
                           fontFamily: "Opensans-Bold",
@@ -316,23 +299,33 @@ class _EditProfileState extends State<EditProfile> {
                   ),
                 ),
                 SizedBox(height: H*0.04,),
-                 Container(
-                  width: W*0.8,
-                  height: H*0.08,
-                  decoration: BoxDecoration(
-                      borderRadius: BorderRadius.all(Radius.circular(5)),
-                      color: flyOrange2
-                  ),
-                  child: Center(child:
-                  Text("Update",
-                    style: TextStyle(
-                        fontFamily: "Opensans-Bold",
-                        fontSize: 16,
-                        color: Colors.white
+                 InkWell(
+                   onTap: (){
+                     updateProfile(
+                       fullNameController.text.trim(),
+                       phoneController.text.trim(),
+                       file!,
+                       image!
+                     );
+                   },
+                   child: Container(
+                    width: W*0.8,
+                    height: H*0.08,
+                    decoration: BoxDecoration(
+                        borderRadius: BorderRadius.all(Radius.circular(5)),
+                        color: flyOrange2
                     ),
-                  )
-                  ),
+                    child: Center(child:
+                    Text("Update",
+                      style: TextStyle(
+                          fontFamily: "Opensans-Bold",
+                          fontSize: 16,
+                          color: Colors.white
+                      ),
+                    )
+                    ),
                 ),
+                 ),
                 SizedBox(height: H*0.06,),
               ],
             ),
@@ -391,24 +384,26 @@ class _EditProfileState extends State<EditProfile> {
       ),
     );
   }
-  Future signUp(String fullName,email,password,confirmPassword,phoneNumber,File displayPicture,File drivingLicense) async {
-    var apiURL = "https://nodeserver.mydevfactory.com:8087/distributor/signup";
+  Future updateProfile(String fullName,phoneNumber,File drivingLicense,File displayPicture) async {
+    var apiURL = "https://nodeserver.mydevfactory.com:8087/distributor/profile";
     final bytes2 = Io.File(drivingLicense.path).readAsBytesSync();
     String base64File = base64.encode(bytes2);
+    print("File: $base64File");
     final bytes = Io.File(displayPicture.path).readAsBytesSync();
     String base64Image = base64.encode(bytes);
+    print("Image: $base64Image");
+    var token = tokenFromAPI;
     var mapData = json.encode({
       "full_name" : fullName,
-      "email": email,
-      "password": password,
-      "confirm_password" : confirmPassword,
       "phone_number" : phoneNumber,
       "display_picture" : "data:image/jpg;base64,$base64Image",
       "driving_license" : "data:application/pdf;base64,$base64File"
     });
     print("JSON DATA : ${mapData}");
-    http.Response response = await http.post(Uri.parse(apiURL),
-        headers: {"Content-Type": "application/json",'Accept': 'application/json',},
+    http.Response response = await http.put(Uri.parse(apiURL),
+        headers: {"Content-Type": "application/json",
+                  'x-access-token': "$token",
+                  'Accept': 'application/json',},
         body: mapData);
     setState((){
       isLoading = true;
@@ -416,7 +411,6 @@ class _EditProfileState extends State<EditProfile> {
     try{
       if(response.statusCode == 200){
         var data = jsonDecode(response.body);
-        Get.to(LoginScreen());
         print("DataForResponse: ${data}");
         print(response.statusCode);
         Fluttertoast.showToast(msg: "A Verification Email Sent To Your Email Id!");
@@ -431,151 +425,7 @@ class _EditProfileState extends State<EditProfile> {
       print(e.toString());
     }
   }
-  Future updateProfile(displayPicture) async {
-    var token = "$tokenFromAPI";
-    print(token);
-    dio.FormData formData = dio.FormData.fromMap({
-      "phone_number": phoneController.text.trim(),
-      "driving_license": "",
-      "full_name": "Sarkar",
-      "display_picture": await dio.MultipartFile.fromFile(displayPicture,
-          filename: DateTime.now().microsecond.toString())
-    });
-    var dio1 = dio.Dio(
-      BaseOptions(
-        headers: {
-          'Content-Type': 'application/json; charset=utf-8',
-          'x-access-token': token,
-        },
-      ),
-    );
 
-    var response = await dio1.put(
-      'https://nodeserver.mydevfactory.com:8087/distributor/profile',
-      data: formData,
-    );
-    if (response.statusCode == 200) {
-      var data = response.data;
-      print(data);
-    } else {
-      var data = response.data;
-      print(data);
-    }
-  }
-  Future uploadImageCheck(String fullName,email,password,confirmPassword,phoneNumber)async{
-    var bytes = File(image!.path).readAsBytesSync();
-    String base64Image = base64Encode(bytes);
-    print('upload proccess started');
-    var apiPostData = json.encode({
-      "full_name" : fullName,
-      "email": email,
-      "password": password,
-      "confirm_password" : confirmPassword,
-      "phone_number" : phoneNumber,
-    });
-    http.Response  response = await http.post(Uri.parse("https://nodeserver.mydevfactory.com:8087/distributor/signup"),body: apiPostData);
-    if(response.statusCode == 200){
-      print('successfull');
-      print('JSON : ${response.body}');
-    }else{
-      print(base64Image);
-      print(response.body);
-      print('fail');
-    }
-  }
-
-  Future uploadDisplayPicture(fullName,email,password,confirmPassword,phoneNumber) async {
-
-    // print('file ${drivingLicense.path}');
-    // print('file ${displayPicture.path}');
-    var stream = http.ByteStream(image!.openRead());
-    stream.cast();
-    var length = await image!.length();
-
-
-    var request = http.MultipartRequest('POST',Uri.parse("https://nodeserver.mydevfactory.com:8087/distributor/signup",
-
-    ));
-    String value1 = '';
-    request.fields.addAll({
-      "full_name" : fullName,
-      "email": email,
-      "password": password,
-      "confirm_password" : confirmPassword,
-      "phone_number" : phoneNumber,
-    });
-    var multiPart = http.MultipartFile('display_picture',stream,length,filename: image!.path,);
-    request.files.add(multiPart);
-    var multiPart2 = http.MultipartFile('driving_license',stream,length,filename: file!.path,);
-    request.files.add(multiPart2);
-    var response = await request.send();
-    if(response.statusCode == 200){
-
-      print('Image Uploaded');
-      print('urlofpost = ${request.fields}');
-    }else{
-      print(response.statusCode);
-      print('fail');
-      print(image!.path);
-    }
-
-
-    // request.files.add(http.MultipartFile(
-    //     'display_picture', displayPicture.readAsBytes().asStream(), displayPicture.lengthSync(),
-    //     filename: basename(displayPicture.path)));
-    // request.files.add(http.MultipartFile(
-    //     'driving_license', drivingLicense.readAsBytes().asStream(), drivingLicense.lengthSync(),
-    //     filename: basename(drivingLicense.path)));
-
-
-
-    // await request.send().then((response) async {
-    //
-    //   print('response = ${response}');
-    //
-    //   if (response.statusCode == 200) {
-    //     response.stream
-    //         .transform(utf8.decoder)
-    //         .listen((value) {})
-    //         .onData((data) {
-    //       value1 = data;
-    //       print('MyData : $data');
-    //     });
-    //     return value1;
-    //
-    //   } else {
-    //     value1 = "Error";
-    //     print('MyData : ${response.statusCode} }');
-    //
-    //     return value1;
-    //   }
-    // });
-    // return value1;
-  }
-  Future<void> uploadImage()async{
-    var stream = http.ByteStream(image!.openRead());
-    stream.cast();
-    var length = await image!.length();
-    var uri = Uri.parse("https://nodeserver.mydevfactory.com:8087/distributor/signup");
-    var request =  http.MultipartRequest('POST',uri);
-    request.fields['full_name'] = 'title';
-    var multiPart = http.MultipartFile('display_picture',stream,length);
-
-    request.files.add(multiPart);
-    var response = await request.send();
-
-    if(response.statusCode == 200){
-      print('Image Uploaded');
-    }else{
-      print('fail');
-    }
-
-    try{
-
-    }catch(e){
-
-    }
-  }
 
   Future registerUser(BuildContext context)async{
     showDialog(
@@ -616,7 +466,7 @@ class _EditProfileState extends State<EditProfile> {
         type: FileType.custom,
         allowedExtensions: ['pdf']
     );
-    if(result == null) return;
+    if(result == null) return drivingLicenseFromAPi;
     final path = result.files.single.path!;
     setState((){
       file = File(path);
@@ -645,36 +495,6 @@ class _EditProfileState extends State<EditProfile> {
     return downloadUrl2;
   }
 
-}
-
-class FirebaseApi {
-  static UploadTask? uploadFile(String destination,File file){
-    try{
-      final ref = FirebaseStorage.instance.ref(destination);
-      return ref.putFile(file);
-    }on FirebaseException catch (e){
-      return null;
-    }
-  }
-}
-class FirebaseApiForImage {
-  static UploadTask? uploadFile(String destination,File image){
-    try{
-      final ref = FirebaseStorage.instance.ref(destination);
-      return ref.putFile(image);
-    }on FirebaseException catch (e){
-      return null;
-    }
-  }
-}
-showProgressBar(BuildContext context){
-  showDialog(
-      context: context,
-      barrierDismissible: false,
-      builder: (BuildContext context){
-        return ProgressDialog(message: "Please wait...",);
-      }
-  );
 }
 displayToastMessage(String message,BuildContext context){
   Fluttertoast.showToast(msg: message);

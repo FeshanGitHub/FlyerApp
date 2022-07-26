@@ -38,6 +38,10 @@ Future<String?> getEmail() async {
   final prefs = await SharedPreferences.getInstance();
   return prefs.getString('email');
 }
+Future removeEmail() async {
+  final prefs = await SharedPreferences.getInstance();
+  return prefs.remove('email');
+}
 Future setDisplayPicture(String displayPicture) async {
   final prefs = await SharedPreferences.getInstance();
   await prefs.setString('displayPicture', displayPicture);
@@ -46,6 +50,10 @@ Future setDisplayPicture(String displayPicture) async {
 Future<String?> getDisplayPicture() async {
   final prefs = await SharedPreferences.getInstance();
   return prefs.getString('displayPicture');
+}
+Future removeDisplayPicture() async {
+  final prefs = await SharedPreferences.getInstance();
+  return prefs.remove('drivingLicense');
 }
 Future setDrivingLicense(String drivingLicense) async {
   final prefs = await SharedPreferences.getInstance();

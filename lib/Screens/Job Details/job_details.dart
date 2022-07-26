@@ -1,8 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flyerapp/Screens/HomePage/Shipments/shipments.dart';
+import 'package:flyerapp/Screens/JobSheetDetails/job_sheet_details.dart';
+import 'package:flyerapp/Screens/JobTracking/job_tracking.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 import '../../Constants/colors.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 
 class JobDetails extends StatefulWidget {
   const JobDetails({Key? key}) : super(key: key);
@@ -357,59 +361,44 @@ class _JobDetailsState extends State<JobDetails> {
                 ),
               ),
             ),
-            Padding(
-              padding:  EdgeInsets.only(left: W*0.045 ,top: H*0.04),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: [
-                  InkWell(
-                    onTap: (){
-                      Get.to(Shipments());
-                    },
-                    child: Container(
-                      width: W*0.42,
-                      height: H*0.08,
-                      decoration: BoxDecoration(
-                        color: flyOrange1,
-                        borderRadius: BorderRadius.all(Radius.circular(3)),
-                      ),
-                      child: Center(child:
-                      Text("Accept",
-                        style: TextStyle(
-                            fontFamily: 'OpenSans-Bold',
-                            fontSize: 16,
-                            color: Colors.white
-                        ),
-                      )
-                      ),
-                    ),
+            SizedBox(height: H*0.04,),
+            InkWell(
+              onTap: (){
+                postJob();
+                Get.to(JobSheetDetails());
+              },
+              child: Container(
+                width: W*0.8,
+                height: H*0.08,
+                decoration: BoxDecoration(
+                    borderRadius: BorderRadius.all(Radius.circular(5)),
+                    color: flyOrange2
+                ),
+                child: Center(child:
+                Text("Apply",
+                  style: TextStyle(
+                      fontFamily: "Opensans-Bold",
+                      fontSize: 16,
+                      color: Colors.white
                   ),
-                  SizedBox(width: W*0.07,),
-                  InkWell(
-                    onTap: (){},
-                    child: Container(
-                      width: W*0.42,
-                      height: H*0.08,
-                      decoration: BoxDecoration(
-                        color: flyOrange1,
-                        borderRadius: BorderRadius.all(Radius.circular(3)),
-                      ),
-                      child: Center(child:
-                      Text("Decline",
-                        style: TextStyle(
-                            fontFamily: 'OpenSans-Bold',
-                            fontSize: 16,
-                            color: Colors.white
-                        ),
-                      )
-                      ),
-                    ),
-                  ),
-                ],),
-            )
+                )
+                ),
+              ),
+            ),
           ],
         ),
       ),
     );
+  }
+  Future postJob() async {
+    var baseurl = "https://nodeserver.mydevfactory.com:8087";
+    var jobId = "62da743debbd0204069c0b07";
+    final response = await http.post(
+        Uri.parse("$baseurl/distributor/applyJob/$jobId"),
+        headers: {
+          'x-access-token': "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYyZDhmNmEwOTQ4MzhiNjc5MDZiN2VmOCIsImlhdCI6MTY1ODQ3MTc2NiwiZXhwIjoxNjY4ODM5NzY2fQ.3tWNWqu9CQCAFMAlFJHsVQhAaMllwUugDY7xLaR7R-I",
+          "Content-Type": "application/json",
+        });
+    print(response.body);
   }
 }

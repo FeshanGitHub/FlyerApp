@@ -8,6 +8,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:flyerapp/Screens/HomePage/Deliveries/deliveries.dart';
 import 'package:flyerapp/Screens/HomePage/HomePage/homepage_main.dart';
 import 'package:flyerapp/Screens/HomePage/Invite%20Friends/invite_friends.dart';
+import 'package:flyerapp/Screens/HomePage/MyJobs/my_jobs.dart';
 import 'package:flyerapp/Screens/HomePage/PreferedLocation/prefered_loca_edit.dart';
 import 'package:flyerapp/Screens/HomePage/Shipments/shipments.dart';
 import 'package:flyerapp/Screens/Job%20Sheet/job_sheet.dart';
@@ -21,10 +22,11 @@ import 'package:circular_bottom_navigation/circular_bottom_navigation.dart';
 import 'package:get/get.dart';
 import '../Job Details/job_details.dart';
 import 'package:http/http.dart' as http;
-
+import 'package:geolocator/geolocator.dart';
 import '../SharedPrefrence/sharedprefrence.dart';
 import '../UserModel/user_model.dart';
 import 'Help/help.dart';
+
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key,}) : super(key: key);
@@ -40,6 +42,7 @@ class _HomePageState extends State<HomePage> {
     getUserData();
     super.initState();
   }
+
   String? userNameAPI;
   String? userEmail;
   String? displayPicture;
@@ -89,6 +92,7 @@ class _HomePageState extends State<HomePage> {
      Profile()
    ];
   var homePages = [
+    MyJobs(),
     Deliveries(),
     PreferedLocaEdit(),
     Shipments(),
@@ -207,7 +211,7 @@ class _HomePageState extends State<HomePage> {
                                 shape: BoxShape.circle,
                                 image: DecorationImage(
                                   fit: BoxFit.cover,
-                                  image:  NetworkImage(displayPicture!)
+                                  image:  NetworkImage("$displayPicture")
                                 )
                               ),
                             ),
@@ -217,14 +221,14 @@ class _HomePageState extends State<HomePage> {
                         Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text(userNameAPI!,
+                            Text("$userNameAPI",
                               style: TextStyle(
                                 fontFamily: "Roboto-Medium",
                                 fontSize: 18,
                                 color: Colors.black
                               ),
                             ),
-                            Text(userEmail!,
+                            Text("$userEmail",
                               style: TextStyle(
                                   fontFamily: "Gothic-Regular",
                                   fontSize: 13,
@@ -243,13 +247,14 @@ class _HomePageState extends State<HomePage> {
                       color: Color(0xFFE0E0E0),
                     ),
                   ),
-                  buildDrawerCard(H,"assets/images/deliveries.png","  Deliveries",0),
-                  buildDrawerCard(H,"assets/images/prefered_location.png","  Prefered Location",1),
-                  buildDrawerCard(H,"assets/images/shipments.png","  Shipments",2),
-                  buildDrawerCard(H,"assets/images/payments.png","  Payments",3),
-                  buildDrawerCard(H,"assets/images/help.png","  Help",4),
-                  buildDrawerCard(H,"assets/images/invite.png","  Invite",5),
-                  buildDrawerCard(H,"assets/images/logout.png","  Logout",6),
+                  buildDrawerCard(H,"assets/images/my_jobs.png","  MyJobs",0),
+                  buildDrawerCard(H,"assets/images/deliveries.png","  Deliveries",1),
+                  buildDrawerCard(H,"assets/images/prefered_location.png","  Prefered Location",2),
+                  buildDrawerCard(H,"assets/images/shipments.png","  Shipments",3),
+                  buildDrawerCard(H,"assets/images/payments.png","  Payments",4),
+                  buildDrawerCard(H,"assets/images/help.png","  Help",5),
+                  buildDrawerCard(H,"assets/images/invite.png","  Invite",6),
+                  buildDrawerCard(H,"assets/images/logout.png","  Logout",7),
                 ],
               ),
             ),
@@ -402,37 +407,41 @@ class _HomePageState extends State<HomePage> {
                 );
   }
    selectedItem(BuildContext context, int index) {
+     switch(index){
+       case 0:
+         Get.to(MyJobs());
+     }
     switch(index){
-      case 0:
+      case 1:
         Get.to(Deliveries());
     }
     switch(index){
-      case 1:
+      case 2:
         Get.to(PreferedLocaEdit());
         break;
     }
     switch(index){
-      case 2:
+      case 3:
         Get.to(Shipments());
         break;
     }
     switch(index){
-      case 3:
+      case 4:
         Get.to(Payment());
         break;
     }
     switch(index){
-      case 4:
+      case 5:
         Get.to(Help());
         break;
     }
     switch(index){
-      case 5:
+      case 6:
         Get.to(InviteFriends());
         break;
     }
     switch(index){
-      case 6:
+      case 7:
         FirebaseAuth.instance.signOut();
         Get.offAll(LoginScreen());
         Fluttertoast.showToast(msg: "You are now Logged off");

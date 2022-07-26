@@ -21,6 +21,7 @@ import 'package:google_sign_in/google_sign_in.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../Widgets/progress_indicator.dart';
+import '../SharedPrefrence/sharedprefrence.dart';
 
 class LoginScreen extends StatefulWidget {
 
@@ -267,6 +268,9 @@ class _LoginScreenState extends State<LoginScreen> {
                         setState(() {
 
                         });
+                        removeDrivingLicense();
+                        removeDisplayPicture();
+                        removeEmail();
                         GoogleSignIn().signOut();
                       },
                       child: CircleAvatar(

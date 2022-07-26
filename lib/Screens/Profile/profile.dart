@@ -228,6 +228,7 @@ class _ProfileState extends State<Profile> {
                                     InkWell(
                                       onTap: ()async{
                                         final urlDrivingLicense = "$drivingLicense";
+                                        print("URL : $urlDrivingLicense");
                                         final file = await getFileFromUrl(urlDrivingLicense);
                                         openPDF(file);
                                       print(drivingLicense);

@@ -55,7 +55,32 @@ class AllApi {
      print(e.toString());
    }
   }
-
+  Future setChatMessage(message) async {
+    var id = await getId();
+    var baseUrl = "https://nodeserver.mydevfactory.com:8087";
+    final response = await http.post(Uri.parse("$baseUrl/chat/message"),
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: json.encode({
+          "distributorId": id,
+          "userId": id,
+          "message": message,
+          "roomName": id
+        }),
+        encoding: Encoding.getByName('utf-8'));
+    try {
+      if (response.statusCode == 200) {
+        var data = jsonDecode(response.body);
+        print(data);
+      } else {
+        var data = jsonDecode(response.body);
+        print(data);
+      }
+    } catch (e) {
+      print(e.toString());
+    }
+  }
   Future loginUser(email, password) async {
     final response = await http.post(
         Uri.parse("https://nodeserver.mydevfactory.com:8087/distributor/login"),
@@ -77,6 +102,7 @@ class AllApi {
         setToken(data["data"]["token"]);
         setEmail(data["data"]["data"]["email"]);
         setDisplayPicture(data["data"]["data"]["display_picture"]);
+        setDrivingLicense(data["data"]["data"]["driving_license"]);
         setPhoneNumber(data["data"]["data"]["phone_number"]);
         setPassword(data["data"]["data"]["password"]);
         setPassword(data["data"]["data"]["driving_license"]);
@@ -137,22 +163,19 @@ class AllApi {
     
 
   }
-  Future updateProfile(displayPicture) async {
-    var token =
-        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYyZDAwNmVhOWNkMDRlNjI4YzY1ZTAxZiIsImlhdCI6MTY1ODEyMDkwMiwiZXhwIjoxNjY4NDg4OTAyfQ.Psr3BtgjY5cHd_frdj_I7mQ3wpBqw8i1OkrXvC_QKkw";
-
+  Future updateProfile(phoneNumber,fullName,token, String? tokenFromAPI) async {
     dio.FormData formData = dio.FormData.fromMap({
-      "phone_number": 9872543210,
-       "driving_license": "",
-      "full_name": "Sarkar",
-       "display_picture": await dio.MultipartFile.fromFile(displayPicture,
-           filename: DateTime.now().microsecond.toString())
+      "phone_number": phoneNumber,
+       // "driving_license": drivingLicense,
+      "full_name": fullName,
+       // "display_picture": await dio.MultipartFile.fromFile("$displayPicture",
+       //     filename: DateTime.now().microsecond.toString())
     });
     var dio1 = Dio(
       BaseOptions(
         headers: {
           'Content-Type': 'application/json; charset=utf-8',
-          'x-access-token': token,
+          'x-access-token': "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYyZDAwNmVhOWNkMDRlNjI4YzY1ZTAxZiIsImlhdCI6MTY1ODEyMDkwMiwiZXhwIjoxNjY4NDg4OTAyfQ.Psr3BtgjY5cHd_frdj_I7mQ3wpBqw8i1OkrXvC_QKkw",
         },
       ),
     );
