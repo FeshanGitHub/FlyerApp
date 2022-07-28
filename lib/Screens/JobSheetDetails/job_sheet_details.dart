@@ -250,109 +250,112 @@ class _JobSheetDetailsState extends State<JobSheetDetails> {
               ),
             ),
             SizedBox(height: H*0.04,),
-            InkWell(
-              onTap: (){
-              Get.to(JobSheetMain());
-              },
-              child: Container(
-                width: W*0.9,
-                height: H*0.08,
-                decoration: BoxDecoration(
-                    borderRadius: BorderRadius.all(Radius.circular(5)),
-                    gradient: LinearGradient(
-                        colors: [flyOrange1,flyOrange2],
-                        begin: Alignment.bottomLeft,
-                        end:  Alignment.topRight
-                    )
-                ),
-                child: Center(child:
-                Text("Track",
-                  style: TextStyle(
-                      fontFamily: "Opensans-Bold",
-                      fontSize: 16,
-                      color: Colors.white
-                  ),
-                )
-                ),
-              ),
-            ),
-            SizedBox(height: H*0.03,),
             FutureBuilder<DataModel>(
               future: getMyJobData(),
               builder: (BuildContext context , snapshot){
                if(snapshot.hasData){
-                 return Padding(
-                   padding:  EdgeInsets.only(left: W*0.04),
-                   child: Column(
-                     children: [
-                       snapshot.data!.shipmentStatus == "not dispatched" ? Text("") : InkWell(
-                         onTap: (){},
-                         child: Container(
-                           width: W*0.9,
-                           height: H*0.08,
-                           decoration: BoxDecoration(
-                               borderRadius: BorderRadius.all(Radius.circular(5)),
-                               gradient: LinearGradient(
-                                   colors: [flyOrange1,flyOrange2],
-                                   begin: Alignment.bottomLeft,
-                                   end:  Alignment.topRight
-                               )
+                 return Column(
+                   children: [
+                     snapshot.data!.shipmentStatus == "not dispatched" ?  InkWell(
+                     onTap: (){
+                   Get.to(JobSheetMain());
+                 },
+                child: Container(
+                width: W*0.9,
+                height: H*0.08,
+                decoration: BoxDecoration(
+                borderRadius: BorderRadius.all(Radius.circular(5)),
+                gradient: LinearGradient(
+                colors: [flyOrange1,flyOrange2],
+                begin: Alignment.bottomLeft,
+                end:  Alignment.topRight
+                )
+                ),
+                child: Center(child:
+                Text("Track",
+                style: TextStyle(
+                fontFamily: "Opensans-Bold",
+                fontSize: 16,
+                color: Colors.white
+                ),
+                )
+                ),
+                ),
+                ) : InkWell(
+                       onTap: (){},
+                       child: Container(
+                         width: W*0.9,
+                         height: H*0.08,
+                         decoration: BoxDecoration(
+                             borderRadius: BorderRadius.all(Radius.circular(5)),
+                             gradient: LinearGradient(
+                                 colors: [flyOrange1,flyOrange2],
+                                 begin: Alignment.bottomLeft,
+                                 end:  Alignment.topRight
+                             )
+                         ),
+                         child: Center(child:
+                         Text("Recived",
+                           style: TextStyle(
+                               fontFamily: "Opensans-Bold",
+                               fontSize: 16,
+                               color: Colors.white
                            ),
-                           child: Center(child:
-                           Text("Track",
-                             style: TextStyle(
-                                 fontFamily: "Opensans-Bold",
-                                 fontSize: 16,
-                                 color: Colors.white
-                             ),
-                           )
-                           ),
+                         )
                          ),
                        ),
-                       Row(
-                         children: [
-                           Text("Your job status:",
-                             style: TextStyle(
-                                 fontFamily: 'OpenSans-Bold',
-                                 fontSize: 16,
-                                 color: Color(0xFF333333)
-                             ),
-                           ),
-                           snapshot.data!.isApproved ? Text(" Approved",
-                             style: TextStyle(
-                                 fontFamily: 'OpenSans-Bold',
-                                 fontSize: 16,
-                                 color: Color(0xFF333333)
-                             ),
-                           ) :Text("Pending",
-                             style: TextStyle(
-                                 fontFamily: 'OpenSans-Bold',
-                                 fontSize: 16,
-                                 color: Color(0xFF333333)
-                             ),
-                           )
-                         ],
-                       ),
-                       Row(
-                         children: [
-                           Text("Your courier status :  ",
-                             style: TextStyle(
-                                 fontFamily: 'OpenSans-Bold',
-                                 fontSize: 16,
-                                 color: Color(0xFF333333)
-                             ),
-                           ),
-                           Text(snapshot.data!.shipmentStatus,
-                             style: TextStyle(
-                                 fontFamily: 'OpenSans-Bold',
-                                 fontSize: 16,
-                                 color: Color(0xFF333333)
-                             ),
-                           )
-                         ],
-                       ),
-                     ],
-                   )
+                     ),
+                     SizedBox(height: H*0.03,),
+                    Padding(
+                      padding:  EdgeInsets.only(left: W*0.05),
+                      child: Column(
+                        children: [
+                          Row(
+                            children: [
+                              Text("Your job status:",
+                                style: TextStyle(
+                                    fontFamily: 'OpenSans-Bold',
+                                    fontSize: 16,
+                                    color: Color(0xFF333333)
+                                ),
+                              ),
+                              snapshot.data!.isApproved ? Text(" Approved",
+                                style: TextStyle(
+                                    fontFamily: 'OpenSans-Bold',
+                                    fontSize: 16,
+                                    color: Color(0xFF333333)
+                                ),
+                              ) :Text("Pending",
+                                style: TextStyle(
+                                    fontFamily: 'OpenSans-Bold',
+                                    fontSize: 16,
+                                    color: Color(0xFF333333)
+                                ),
+                              )
+                            ],
+                          ),
+                          Row(
+                            children: [
+                              Text("Your courier status :  ",
+                                style: TextStyle(
+                                    fontFamily: 'OpenSans-Bold',
+                                    fontSize: 16,
+                                    color: Color(0xFF333333)
+                                ),
+                              ),
+                              Text(snapshot.data!.shipmentStatus,
+                                style: TextStyle(
+                                    fontFamily: 'OpenSans-Bold',
+                                    fontSize: 16,
+                                    color: Color(0xFF333333)
+                                ),
+                              )
+                            ],
+                          ),
+                        ],
+                      ),
+                    )
+                   ],
                  );
                }else{
                  return Center(child: CircularProgressIndicator(color: flyOrange2,));
