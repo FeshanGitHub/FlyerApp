@@ -3,7 +3,7 @@ import 'package:flyerapp/Screens/JobTracking/job_tracking.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 import '../../Constants/colors.dart';
-
+import 'package:http/http.dart' as http;
 class StartJob extends StatefulWidget {
   const StartJob({Key? key}) : super(key: key);
 
@@ -324,7 +324,8 @@ class _StartJobState extends State<StartJob> {
             SizedBox(height: H*0.05,),
             InkWell(
               onTap: (){
-              Get.to(JobTracking());
+                startJob();
+                Get.to(JobTracking());
               },
               child: Container(
                 width: W*0.9,
@@ -352,5 +353,16 @@ class _StartJobState extends State<StartJob> {
         ),
       ),
     );
+  }
+  Future startJob() async {
+    var baseurl = "https://nodeserver.mydevfactory.com:8087";
+    var jobId = "62da743debbd0204069c0b07";
+    final response = await http.patch(
+        Uri.parse("$baseurl/distributor/startJob/$jobId"),
+        headers: {
+          'x-access-token': "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYyZDhmNmEwOTQ4MzhiNjc5MDZiN2VmOCIsImlhdCI6MTY1ODQ3MTc2NiwiZXhwIjoxNjY4ODM5NzY2fQ.3tWNWqu9CQCAFMAlFJHsVQhAaMllwUugDY7xLaR7R-I",
+          "Content-Type": "application/json",
+        });
+    print(response.body);
   }
 }

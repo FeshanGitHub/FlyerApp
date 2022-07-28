@@ -266,7 +266,7 @@ class _HomePageMainState extends State<HomePageMain> {
                           ),
                           child: Row(
                             children: [
-                              _loading ?CircularProgressIndicator(color: flyOrange2,)  : Container(
+                              _loading ? CircularProgressIndicator(color: flyOrange2,)  : Container(
                                   color: Colors.red,
                                   width: W*0.3,
                                   height: H*0.15,
@@ -331,7 +331,7 @@ class _HomePageMainState extends State<HomePageMain> {
                     SizedBox(height: H*0.015,)
                   ],
                 );
-              }) : Center(child: CircularProgressIndicator(color: flyOrange2,))
+              }) : Text("No jobs are found")
         ],
       ),
     ),

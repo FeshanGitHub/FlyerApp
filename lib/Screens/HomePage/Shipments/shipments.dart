@@ -1,10 +1,15 @@
+import 'dart:convert';
+import 'package:flyerapp/Screens/JobTracking/job_tracking.dart';
+import 'package:intl/intl.dart';
 import 'package:flutter/material.dart';
 import 'package:flyerapp/Screens/JobSheetDetails/job_sheet_details.dart';
 import 'package:flyerapp/Screens/Notifications/notifications.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
-
+import 'package:http/http.dart' as http;
 import '../../../Constants/colors.dart';
+import '../../Job Details/job_my_jobs_status.dart';
+import '../../UserModel/job_model.dart';
 
 
 class Shipments extends StatefulWidget {
@@ -15,8 +20,37 @@ class Shipments extends StatefulWidget {
 }
 
 class _ShipmentsState extends State<Shipments> {
+  List<dynamic> _myJobs = [];
+  bool _loading = false;
+  Future<List<Datum>> getMyJobData()async{
+    setState((){
+      _loading = true;
+    });
+    var url = "https://nodeserver.mydevfactory.com:8087/distributor/approvedJobs";
+    var response = await http.get(Uri.parse(url,),
+      headers: {
+        'x-access-token': "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYyZDhmNmEwOTQ4MzhiNjc5MDZiN2VmOCIsImlhdCI6MTY1ODQ3MTc2NiwiZXhwIjoxNjY4ODM5NzY2fQ.3tWNWqu9CQCAFMAlFJHsVQhAaMllwUugDY7xLaR7R-I",
+      },);
+    // JobModel jobModel = JobModel.fromJson(jsonDecode(response.body) as Map<String, dynamic>);
+    // print(jobModel.jobTitle);
+    var jsonData = jsonDecode(response.body);
+    print(response.body);
+    setState((){
+      _myJobs = jsonData['data'];
+      print(_myJobs[0]['jobTitle']);
+      _loading = false;
+    });
+    print(jsonData);
+    return jsonData;
+  }
+  @override
+  void initState(){
+    getMyJobData();
+    super.initState();
+  }
   @override
   Widget build(BuildContext context) {
+    final DateFormat formatter = DateFormat('yyyy-MM-dd');
     var H = MediaQuery.of(context).size.height;
     var W = MediaQuery.of(context).size.width;
     return Scaffold(
@@ -67,24 +101,96 @@ class _ShipmentsState extends State<Shipments> {
       body: SingleChildScrollView(
         child: Column(
           children: [
-            ListView.builder(
+            SizedBox(height: H*0.02,),
+            _myJobs.isNotEmpty ? ListView.builder(
+                itemCount: _myJobs.length,
                 physics: NeverScrollableScrollPhysics(),
                 shrinkWrap: true,
-                itemCount: 8,
                 itemBuilder: (context ,index){
+                  var date = _myJobs[0]['createdAt'];
                   return Column(
                     children: [
                       InkWell(
                           onTap: (){
                             Get.to(JobSheetDetails());
                           },
-                          child: buildCardFlyer(H, W)),
+                          child: Container(
+                            height: H*0.15,
+                            width: W*0.9,
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.all(Radius.circular(8)),
+                              color: Colors.white,
+                            ),
+                            child: Row(
+                              children: [
+                                _loading ?CircularProgressIndicator(color: flyOrange2,)  : Container(
+                                    color: Colors.red,
+                                    width: W*0.3,
+                                    height: H*0.15,
+                                    child: Image.network(_myJobs[0]['bannerImage'],fit: BoxFit.cover,)),
+                                Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  children: [
+                                    SizedBox(height: H*0.03,),
+                                    Text(" ${_myJobs[0]['jobTitle']}",
+                                      style: TextStyle(
+                                          fontSize: 15,
+                                          fontFamily: 'OpenSans-Bold',
+                                          color: Color(0xFF333333)
+                                      ),
+                                    ),
+                                    SizedBox(height: H*0.01,),
+                                    Row(
+                                      children: [
+                                        Text("  Location :",
+                                          style: TextStyle(
+                                              fontSize: 12,
+                                              fontFamily: 'OpenSans-Regular',
+                                              color: Color(0xFF808080)
+                                          ),
+                                        ),
+                                        Text(_myJobs[0]['startLocation']['address'],
+                                          overflow: TextOverflow.ellipsis,
+                                          style: TextStyle(
+                                              fontSize: 12,
+                                              fontFamily: 'OpenSans-Regular',
+                                              color: Color(0xFF333333)
+                                          ),
+                                        ),
+
+                                      ],
+                                    ),
+                                    Row(
+                                      children: [
+                                        Text("  Date :",
+                                          style: TextStyle(
+                                              fontSize: 12,
+                                              fontFamily: 'OpenSans-Regular',
+                                              color: Color(0xFF808080)
+                                          ),
+                                        ),
+                                        Text(formatter.parse(date).toString(),
+                                          overflow: TextOverflow.ellipsis,
+                                          style: TextStyle(
+                                              fontSize: 12,
+                                              fontFamily: 'OpenSans-Regular',
+                                              color: Color(0xFF333333)
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ],
+                                ),
+                              ],
+                            ),
+                          )),
                       SizedBox(height: H*0.015,)
                     ],
                   );
-                })
+                }) : Center(child: CircularProgressIndicator(color: flyOrange2,))
           ],
-        ),
+        )
       ),
     );
   }

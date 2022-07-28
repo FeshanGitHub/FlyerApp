@@ -390,6 +390,7 @@ class _JobDetailsState extends State<JobDetails> {
       ),
     );
   }
+
   Future postJob() async {
     var baseurl = "https://nodeserver.mydevfactory.com:8087";
     var jobId = "62da743debbd0204069c0b07";

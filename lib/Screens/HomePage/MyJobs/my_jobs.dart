@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:flyerapp/Screens/Job%20Details/job_my_jobs_status.dart';
 import 'package:intl/intl.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -111,7 +112,7 @@ class _MyJobsState extends State<MyJobs> {
                     children: [
                       InkWell(
                           onTap: (){
-                            Get.to(JobDetails());
+                            Get.to(JobDetailsMyJobs());
                           },
                           child: Container(
                             height: H*0.15,
